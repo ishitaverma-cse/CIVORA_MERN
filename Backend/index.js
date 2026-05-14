@@ -14,7 +14,7 @@ app.use(express.static("server/uploads"))
 app.use(express.urlencoded());
 app.use(express.json());              
            
-require('dotenv').config();          // .env -> process.env
+require('dotenv').config();          //env -> process.env
 
 //multer folder becomes publicly accessible via URL
 app.use("/uploads", require("express").static("uploads"));

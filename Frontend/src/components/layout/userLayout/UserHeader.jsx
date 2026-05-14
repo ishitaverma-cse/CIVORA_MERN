@@ -422,7 +422,7 @@ export default function UserHeader() {
                                     onChange={(e) => setAddress(e.target.value)}
                                 />
 
-                                <button type="submit">
+                                <button type="submit" className="bg-success">
                                     Register
                                 </button>
 

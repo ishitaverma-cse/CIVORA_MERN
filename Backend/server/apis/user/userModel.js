@@ -12,6 +12,8 @@ const userSchema = new mongoose.Schema({
     isDelete: { type: Boolean, default: false },
     isBlocked: { type: Boolean },
     blockReason: { type: String, default: "" }, //extra field
+    resetOtp: { type: String },
+    otpExpire: { type: Date },
     
     createdAt: { type: Date, default: Date.now },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

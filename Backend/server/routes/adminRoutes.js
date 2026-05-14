@@ -18,6 +18,8 @@ const dashboardController  = require("../apis/dashboard/dashboardController");
 //create route 
 //LOGIN & TOKEN (only admin)
 router.post('/login', userController.login);
+router.post('/sendOtp', userController.sendOtp);
+router.post('/resetPassword', userController.resetPassword);
 router.post('/allCitizens', userController.allCitizens);
 router.post('/blockUser', userController.blockUser);
 
