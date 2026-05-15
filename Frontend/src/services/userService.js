@@ -4,7 +4,7 @@
 
 //axios = used to make HTTP requests.
 import axios from 'axios'
-import { BASE_URL, REGISTER, LOGIN, ALLCITIZEN, BLOCKUSER, SENDOTP, RESETPASSWORD } from '../../endpoints';
+import { BASE_URL, REGISTER, LOGIN, ALLCITIZEN, BLOCKUSER, SENDOTP, RESETPASSWORD, HOMESTATS } from '../../endpoints';
 
 function getToken() {
     let token = localStorage.getItem('token');
@@ -21,6 +21,11 @@ export function register(data) {
 export function login(data) {
     return axios.post(BASE_URL + LOGIN, data)
 }
+
+export function homeStats(data) {
+    return axios.post(BASE_URL + HOMESTATS, data);
+}
+
 export function sendOtp(data) {
 
     console.log("Sinding req with data: ", data )

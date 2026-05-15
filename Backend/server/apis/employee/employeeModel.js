@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const employeeSchema = new mongoose.Schema({
-    autoId: { type: Number },
+    autoId: { type: Number, default: 0 },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },   //employee linked to user account.
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "category" },
 

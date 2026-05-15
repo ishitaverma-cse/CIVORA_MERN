@@ -12,7 +12,7 @@ export default function ManageAssignments() {
     const [loading, setLoading] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4;
+    const itemsPerPage = 5;
 
     // FETCH DATA
     useEffect(() => {
@@ -185,7 +185,7 @@ export default function ManageAssignments() {
                                                     </td>
 
                                                     {/* ISSUE */}
-                                                    <td className="fw-semibold">
+                                                    <td className="fw-semibold text-center">
                                                         {issue.title}
                                                     </td>
 

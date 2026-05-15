@@ -38,7 +38,7 @@ export default function ManageIssue() {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4;
+    const itemsPerPage = 10;
 
     // OPEN / CLOSE
     function openModal(type, _id) {

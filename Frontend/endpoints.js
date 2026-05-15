@@ -11,6 +11,9 @@ export const BLOCKUSER = '/admin/blockUser'
 //Dashboard
 export const DASHBOARD = '/admin/dashboard'
 
+//HOME
+export const HOMESTATS = "/citizen/homee/stats";
+
 //Category
 export const ADDCATEGORY = '/admin/category/add'
 export const ALLCATEGORY = '/admin/category/all'

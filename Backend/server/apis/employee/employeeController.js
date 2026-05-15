@@ -52,7 +52,7 @@ const add = async (req, res) => {
         let savedUser = await newUser.save();
 
         let employeeData = new employeeModel({
-            autoId: await employeeModel.countDocuments({}),
+            autoId: await employeeModel.countDocuments({}) + 1,
             name: incomingData.name,
             email: incomingData.email,
             designation: incomingData.designation,
@@ -336,7 +336,7 @@ const updateProfile = async (req, res) => {
 
         const updatedEmployee =
             await employeeModel.findOneAndUpdate(
-                {userId: req.user._id},
+                { userId: req.user._id },
                 updateData,
                 { new: true }
             );
@@ -365,6 +365,6 @@ module.exports = {
     update,
     softDelete,
     allEmployees,
-    profile, 
+    profile,
     updateProfile
 }

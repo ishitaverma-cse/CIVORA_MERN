@@ -1,5 +1,5 @@
 .landing-container {
-    background: #0b0f1a;
+    /* background: #0b0f1a; */
     color: white;
 }
 
@@ -32,22 +32,24 @@
 
 /* TITLE STYLE (magazine vibe) */
 .hero-title {
-    font-size: 4rem;
+    font-size: 3.2rem;
     font-weight: 900;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
-    color: #ffffff;
-    text-shadow: 0 6px 25px rgba(0,0,0,0.8);
+    color: white;
     line-height: 1.1;
 }
 
 /* SUBTITLE */
 .hero-subtitle {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: white;
     max-width: 650px;
-    text-shadow: 0 4px 15px rgba(0,0,0,0.7);
+}
+
+.hero-slide {
+    filter: none !important;
 }
 
 /* CTA BUTTONS */
@@ -88,4 +90,484 @@
     background: white;
     box-shadow: 0 10px 30px rgba(0,0,0,0.06);
     color: #1a1a1a;
+}
+
+.carousel-item::before {
+    display: none !important;
+    background: transparent !important;
+}
+
+.carousel-item {
+    position: relative;
+}
+
+.hero-slide {
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* ================= LIVE CITY STATS ================= */
+
+.city-stats-section {
+    padding: 80px 8%;
+    background: #f7faf9;
+    position: relative;
+    overflow: hidden;
+}
+
+.section-title {
+    margin-bottom: 70px;
+    font-weight: 600;
+    font-size: 2.5rem;
+}
+
+.section-title h2 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 18px;
+}
+
+.section-title p {
+    max-width: 720px;
+    margin: auto;
+    color: #6b7280;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+}
+
+.stat-card {
+    background: rgba(197, 229, 226, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 28px;
+    padding: 45px 30px;
+    text-align: center;
+    transition: 0.4s ease;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+}
+
+.stat-icon {
+    width: 75px;
+    height: 75px;
+    margin: auto;
+    border-radius: 50%;
+    background: linear-gradient(
+        135deg,
+        #3a7d67,
+        #5d9b84
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.stat-icon i {
+    color: white;
+    font-size: 28px;
+}
+
+.stat-card h3 {
+    font-size: 2.3rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.stat-card p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 992px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .section-title h2 {
+        font-size: 2.3rem;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .city-stats-section {
+        padding: 80px 0%;
+    }
+
+    .section-title h2 {
+        font-size: 2rem;
+    }
+}
+
+/* ================= DEPARTMENTS SECTION ================= */
+
+.departments-section{
+    padding: 80px 0%;
+    background: #ffffff;
+}
+
+.department-heading{
+    max-width: 850px;
+    margin: auto;
+    margin-bottom: 80px;
+}
+
+.department-badge{
+    display: inline-block;
+    padding: 8px 18px;
+    border: 1px solid #d8d8d8;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #666;
+    margin-bottom: 20px;
+    background: #fafafa;
+}
+
+.department-heading h2{
+    font-size: 3.3rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 25px;
+}
+
+.department-heading p{
+    color: #666;
+    font-size: 1.08rem;
+    line-height: 1.9;
+}
+
+/* GRID */
+
+.department-grid{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-auto-rows: 220px;
+    gap: 22px;
+    grid-auto-flow: dense;
+
+}
+
+/* CARD */
+
+.department-card{
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px;
+    cursor: pointer;
+}
+
+.department-card img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.6s ease;
+}
+
+.department-card:hover img{
+    transform: scale(1.08);
+}
+
+/* OVERLAY */
+
+.department-overlay{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.3),
+        rgba(0,0,0,0.15)
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 35px;
+}
+
+.department-overlay span{
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.department-overlay h3{
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+/* DIFFERENT SIZES */
+
+.large-card{
+    grid-row: span 2;
+}
+
+.wide-card{
+    grid-column: span 2;
+}
+
+.extra-large-card{
+    grid-row: span 3;
+}
+
+/* HOVER EFFECT */
+
+.department-card::after{
+    content: "";
+    position: relative;
+    inset: 0;
+    border: 2px solid transparent;
+    border-radius: 28px;
+    transition: 0.4s ease;
+}
+
+.department-card:hover::after{
+    border-color: rgba(255,255,255,0.5);
+}
+
+.infrastructure-card{
+    grid-row: span 1;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:992px){
+
+    .department-grid{
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .wide-card{
+        grid-column: span 1;
+    }
+
+    .department-heading h2{
+        font-size: 2.5rem;
+    }
+}
+
+@media(max-width:768px){
+
+    .department-grid{
+        grid-template-columns: 1fr;
+        grid-auto-rows: 220px;
+    }
+
+    .extra-large-card{
+        grid-row: span 2;
+    }
+
+    .large-card{
+        grid-row: span 2;
+    }
+
+    .tall-card{
+        grid-row: span 2;
+    }
+
+    .department-heading h2{
+        font-size: 2rem;
+    }
+
+    .department-overlay h3{
+        font-size: 1.5rem;
+    }
+}
+
+/* ================= HOW CIVORA WORKS ================= */
+
+.civora-flow-section{
+    padding: 80px 0;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.flow-heading{
+    max-width: 850px;
+    margin: auto;
+    margin-bottom: 100px;
+}
+
+.flow-badge{
+    display: inline-block;
+    padding: 8px 18px;
+    border: 1px solid #dcdcdc;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #666;
+    background: #fafafa;
+    margin-bottom: 20px;
+}
+
+.flow-heading h2{
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 25px;
+    line-height: 1.1;
+}
+
+.flow-heading p{
+    font-size: 1.08rem;
+    line-height: 1.9;
+    color: #666;
+}
+
+/* ROW */
+
+.flow-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 80px;
+    margin-bottom: 140px;
+    padding: 0 6%;
+}
+
+.reverse-flow{
+    flex-direction: row-reverse;
+}
+
+/* IMAGE */
+
+.flow-image{
+    flex: 1;
+    position: relative;
+}
+
+.flow-image img{
+    width: 100%;
+    height: 650px;
+    object-fit: cover;
+    border-radius: 35px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+    transition: 0.5s ease;
+}
+
+.flow-image img:hover{
+    transform: scale(1.02);
+}
+
+/* CONTENT */
+
+.flow-content{
+    flex: 1;
+}
+
+.flow-step{
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: #6c63ff;
+    margin-bottom: 20px;
+}
+
+.flow-content h3{
+    font-size: 2.7rem;
+    font-weight: 500;
+    line-height: 1.15;
+    margin-bottom: 25px;
+    color: #111;
+}
+
+.flow-content p{
+    font-size: 1.05rem;
+    color: #666;
+    line-height: 1.9;
+    margin-bottom: 35px;
+}
+
+/* POINTS */
+
+.flow-points{
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.flow-points div{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 16px;
+    color: #222;
+    font-weight: 500;
+}
+
+.flow-points i{
+    color: #6c63ff;
+    font-size: 18px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:992px){
+
+    .flow-row,
+    .reverse-flow{
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    .flow-content h3{
+        font-size: 2.3rem;
+    }
+
+    .flow-heading h2{
+        font-size: 2.5rem;
+    }
+
+    .flow-image img{
+        height: 450px;
+    }
+}
+
+@media(max-width:768px){
+
+    .flow-content h3{
+        font-size: 2rem;
+    }
+
+    .flow-heading h2{
+        font-size: 2rem;
+    }
+
+    .flow-row{
+        margin-bottom: 90px;
+    }
+
+    .flow-image img{
+        height: 350px;
+    }
 }

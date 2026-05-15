@@ -104,6 +104,7 @@ export default function ReportIssue({ closeModal }) {
         <div className="container d-flex justify-content-center">
           <div className="card shadow-lg border-0 p-4" style={{ maxWidth: "700px", width: "100%", borderRadius: "15px" }}>
 
+            {/* FORM */}
             <form onSubmit={handleSubmit}>
               <div className="row g-3">
 

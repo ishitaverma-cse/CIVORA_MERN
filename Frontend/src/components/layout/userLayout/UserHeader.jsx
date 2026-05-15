@@ -384,7 +384,9 @@ export default function UserHeader() {
                                     />
 
                                     <input
-                                        type="number"
+                                        type="tel"
+                                        maxLength={10}
+                                        minLength={10}
                                         placeholder="Phone"
                                         value={phone}
                                         onChange={(e) => setPhone(e.target.value)}

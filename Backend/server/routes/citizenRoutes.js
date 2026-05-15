@@ -6,12 +6,17 @@ const upload = require("../middleware/multer");
 const CitizenController = require('../apis/citizen/citizenController')
 const issueController = require('../apis/issue/issueController')
 const upvoteController = require('../apis/upvote/upvoteController')
+const homeController = require("../apis/homee/homeController");
 
 
 
 //create routes
 //REGISTER
 router.post('/register', CitizenController.register);
+
+
+//HOME
+router.post("/homee/stats", homeController.homeStats);
 
 //ISSUE
 router.post('/issue/add', upload.single("media"), issueController.add);
@@ -27,8 +32,6 @@ router.post('/upvote/add', upvoteController.add);
 router.post('/upvote/all', upvoteController.all);
 router.post('/upvote/single', upvoteController.single);
 router.post('/upvote/softDelete', upvoteController.softDelete);
-
-
 
 
 

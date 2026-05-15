@@ -41,7 +41,7 @@ export default function ManageEmployee() {
     const [modalIsOpen, setIsOpen] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 3;
+    const itemsPerPage = 5;
 
     // OPEN / CLOSE
     function openModal(type, _id) {
@@ -533,7 +533,9 @@ export default function ManageEmployee() {
                         <div className="col-md-6">
                             <label className="form-label">Phone</label>
                             <input
-                                type="number"
+                                type="tel"
+                                maxLength={10}
+                                minLength={10}
                                 className="form-control"
                                 placeholder="Enter phone number"
                                 value={phone}

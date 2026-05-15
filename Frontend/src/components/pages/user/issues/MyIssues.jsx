@@ -100,7 +100,6 @@ export default function MyIssues() {
         openModal();
     };
 
-
     return (
         <>
             <div className="container mt-4">
@@ -160,6 +159,7 @@ export default function MyIssues() {
                     <div className="row">
 
                         {issues.map((issue) => (
+                            
                             <div className="col-md-4 p-4 mb-3" key={issue._id}>
                                 <div className="issue-card h-100">
 

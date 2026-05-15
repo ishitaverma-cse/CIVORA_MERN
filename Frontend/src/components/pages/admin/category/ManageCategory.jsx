@@ -33,7 +33,7 @@ export default function ManageCategory() {
     const [modalIsOpen, setIsOpen] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4;
+    const itemsPerPage = 5;
 
 
     // OPEN / CLOSE
