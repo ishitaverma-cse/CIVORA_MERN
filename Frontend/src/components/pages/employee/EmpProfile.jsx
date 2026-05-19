@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { profile } from "../../../services/EmployeeService";
-import { emp_allIssue } from "../../../services/issueService";
+import { emp_allIssue } from "../../../services/IssueService";
 import { updateProfile } from "../../../services/EmployeeService";
 import { toast } from "react-toastify";
 
