@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { admin_allIssue } from "../../../../services/issueService";
+import { admin_allIssue } from "../../../../services/IssueService";
 import { allEmployees } from "../../../../services/employeeService";
 import { addAssignment, allAssignment } from "../../../../services/AssignmentService";
 
