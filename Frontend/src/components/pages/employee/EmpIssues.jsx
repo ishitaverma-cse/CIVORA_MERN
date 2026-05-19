@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { toast } from "react-toastify";
 import { emp_allIssue, emp_updateIssue } from "../../../services/IssueService";
-import { profile } from "../../../services/employeeService";
+import { profile } from "../../../services/EmployeeService";
 import { useLocation } from "react-router-dom";
 
 Modal.setAppElement("#root");
