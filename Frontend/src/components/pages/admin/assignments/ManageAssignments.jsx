@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { admin_allIssue } from "../../../../services/IssueService";
-import { allEmployees } from "../../../../services/employeeService";
+import { allEmployees } from "../../../../services/EmployeeService";
 import { addAssignment, allAssignment } from "../../../../services/AssignmentService";
 
 export default function ManageAssignments() {
