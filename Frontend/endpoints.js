@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:3000'
+export const BASE_URL = 'https://civora-mern.onrender.com'
 
 //user (auth)
 export const REGISTER = '/citizen/register'
