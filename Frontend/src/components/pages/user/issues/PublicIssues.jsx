@@ -145,7 +145,7 @@ export default function PublicIssues() {
                 const citizenId = localStorage.getItem("userId");
                 const key = `upvotedIssues_${citizenId}`;
 
-                const stored = JSON.parse(localStorage.getItem(key)) || [];
+                let stored = JSON.parse(localStorage.getItem(key)) || [];
 
                 // fallback to old data
                 if (!stored) {
