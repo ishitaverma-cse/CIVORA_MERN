@@ -68,6 +68,8 @@ router.post('/notification/single', notificationController.single);
 router.post('/notification/update', notificationController.update);
 router.post('/notification/softDelete', notificationController.softDelete);
 
+router.post('/notification/admin', notificationController.adminNotifications);
+
 // DASHBOARD ROUTE
 router.post("/dashboard", dashboardController.dashboard);
 

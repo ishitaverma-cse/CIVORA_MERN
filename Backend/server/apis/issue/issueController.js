@@ -2,6 +2,7 @@ const issueModel = require('./issueModel');
 const userModel = require('../user/userModel')
 const upvoteModel = require('../upvote/upvoteModel')
 const employeeModel = require('../employee/employeeModel')
+const notificationModel = require("../notification/notificationModel");
 
 // CREATE OPERATION
 const add = async (req, res) => {
@@ -54,9 +55,9 @@ const add = async (req, res) => {
             const last = await issueModel.findOne().sort({ autoId: -1 });
 
             const newAutoId = last ? last.autoId + 1 : 1;
+
             //SAVE ISSUE
             let issueData = new issueModel({
-
                 autoId: newAutoId,
                 title: incomingData.title,
                 categoryId: incomingData.categoryId,
@@ -71,6 +72,25 @@ const add = async (req, res) => {
             })
 
             let savedissue = await issueData.save();
+
+            // CREATE ADMIN NOTIFICATION (BELL)
+            const lastNotification = await notificationModel
+                .findOne()
+                .sort({ autoId: -1 });
+
+            const newNotificationId = lastNotification
+                ? lastNotification.autoId + 1
+                : 1;
+
+            await notificationModel.create({
+                autoId: newNotificationId,
+                issueId: savedissue._id,
+                reportedBy: reportedBy,
+                isAdmin: true,
+                type: "ISSUE_REPORTED",
+                status: "Pending",
+                message: `New issue reported: ${savedissue.title}`
+            });
 
             res.json({
                 status: 201,
@@ -172,7 +192,7 @@ const update = async (req, res) => {
                 message: "_id is required"
             })
         }
-        
+
 
         //STEP 1: FETCH ISSUE
         const issue = await issueModel.findOne({
@@ -187,6 +207,8 @@ const update = async (req, res) => {
                 message: "No such issue exists"
             })
         }
+
+        const oldStatus = issue.status;
 
         // ROLE CHECK
         const userType = req.user.userType;  // (Assuming: 1 = Admin, 2 = Employee, 3 = Citizen)
@@ -220,6 +242,12 @@ const update = async (req, res) => {
             // STEP 4: Allowed updates
             if (incomingData.status) {
                 issue.status = incomingData.status;
+
+                // REMOVE OLD RESOLUTION DATA
+                if (incomingData.status !== "Resolved") {
+                    issue.remarks = "";
+                    issue.proofImage = "";
+                }
             }
 
             if (incomingData.remarks) {
@@ -260,14 +288,32 @@ const update = async (req, res) => {
         issue.updatedAt = Date.now();
 
         let savedData = await issue.save();
+        if (oldStatus !== issue.status) {       //prevent duplicate notifications
 
+            // CREATE NOTIFICATION FOR CITIZEN
+            await notificationModel.create({
+                autoId: await notificationModel.countDocuments({}) + 1,
+                issueId: issue._id,
+                userId: issue.reportedBy,
+                isAdmin: true,
+                type:
+                    issue.status === "Resolved"
+                        ? "ISSUE_RESOLVED"
+                        : "STATUS_UPDATED",
+                status: issue.status,
+                message:
+                    `Your issue "${issue.title}" is now ${issue.status}`,
+                remark: issue.remarks || "",
+                proofImage:
+                    issue.proofImage || ""
+            });
+        }
         return res.json({
             status: 200,
             success: true,
             message: "issue Updated",
             data: savedData
         });
-
     }
     catch (err) {
         return res.json({

@@ -17,35 +17,28 @@ const add = async (req, res) => {
                 message: validation
             })
         }
-        else {
-            let existingData = await notificationModel.findOne({
-                userId: incomingData.userId
-            })
 
-            if (existingData) {
-                return res.json({
-                    status: 400,
-                    success: false,
-                    message: "User has already received notification of this issue."
-                })
-            }
+        // CREATE NEW TIMELINE ENTRY
+        let notificationData = new notificationModel({
+            autoId: await notificationModel.countDocuments({}) + 1,
+            issueId: incomingData.issueId,
+            userId: incomingData.userId,
+            isAdmin: incomingData.isAdmin || false,
+            type: incomingData.type,
+            status: incomingData.status,
+            message: incomingData.message,
+            remark: incomingData.remark || "",
+            proofImage: incomingData.proofImage || ""
 
-            let notificationData = new notificationModel({
-                autoId: await notificationModel.countDocuments({}) + 1,
-                issueId: incomingData.issueId,
-                userId: incomingData.userId,
-                type: incomingData.type,
-                message: incomingData.message,
-            })
-            let savednotification = await notificationData.save();
+        });
 
-            res.json({
-                status: 201,
-                success: true,
-                message: "notification Saved",
-                data: savednotification
-            })
-        }
+        let savedNotification = await notificationData.save();
+        res.json({
+            status: 201,
+            success: true,
+            message: "Notification Added",
+            data: savedNotification
+        });
     }
     catch (err) {
         return res.json({
@@ -62,7 +55,11 @@ const add = async (req, res) => {
 
 const all = async (req, res) => {
     try {
-        const allData = await notificationModel.find({ isDelete: false });     // to retrive all the documents
+        const allData = await notificationModel
+            .find({ isDelete: false })
+            .populate("issueId")
+            .sort({ createdAt: -1 });     // to retrive all the documents
+
         const total = await notificationModel.countDocuments({ isDelete: false });
         res.json({
             status: 200,
@@ -205,14 +202,70 @@ const softDelete = async (req, res) => {
             message: "ISE: " + err.message
         })
     }
-
 }
 
+//TO GET MY NOTIFICATIONS
+const myNotifications = async (req, res) => {
+
+    try {
+        const userId = req.body.userId;
+        const notifications = await notificationModel
+            .find({
+                userId,
+                isDelete: false
+            })
+            .populate("issueId")
+            .sort({ createdAt: -1 });
+        res.json({
+            success: true,
+            data: notifications
+        });
+
+    } catch (err) {
+        res.json({
+            success: false,
+            message: err.message
+        });
+    }
+};
+
+//TO GET ADMIN NOTIFICATION
+const adminNotifications = async (req, res) => {
+    try {
+
+        const notifications = await notificationModel
+            .find({
+                isAdmin: true,
+                isDelete: false
+            })
+            .populate("reportedBy")
+            .populate({
+                path: "issueId",
+                populate: {
+                    path: "categoryId"
+                }
+            })
+            .sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            data: notifications
+        });
+
+    } catch (err) {
+        res.json({
+            success: false,
+            message: err.message
+        });
+    }
+};
 
 module.exports = {
     add,
     all,
     single,
     update,
-    softDelete
+    softDelete,
+    myNotifications,
+    adminNotifications
 }

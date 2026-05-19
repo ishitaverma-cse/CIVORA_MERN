@@ -1,6 +1,64 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import { addContact } from "../../../services/ContactService";
 
 export default function Contact() {
+
+    const [contactName, setContactName] = useState("");
+    const [contactEmail, setContactEmail] = useState("");
+    const [subject, setSubject] = useState("");
+    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    //CONTACT FORM
+    const handleContactForm = async (e) => {
+        e.preventDefault();
+        if (
+            !contactName ||
+            !contactEmail ||
+            !subject ||
+            !message
+        ) {
+            toast.error("All fields are required");
+            return;
+        }
+        try {
+            setLoading(true);
+            const formData = {
+                name: contactName,
+                email: contactEmail,
+                subject,
+                message
+            };
+
+            const res = await addContact(formData);
+            if (res.data.success) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Message Sent",
+                    text: "Thank you for contacting CIVORA.",
+                    confirmButtonColor: "#198754"
+                });
+
+                // CLEAR FORM
+                setContactName("");
+                setContactEmail("");
+                setSubject("");
+                setMessage("");
+            } else {
+                toast.error(res.data.message);
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error("Something went wrong");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     return (
         <>
             <main className="main">
@@ -19,12 +77,13 @@ export default function Contact() {
                     </div>
                 </div>
                 {/* End Page Title */}
+
                 {/* Contact Section */}
                 <section id="contact" className="contact section">
                     {/* Map Section */}
                     <div className="map-container mb-5">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d109066.25905193972!2d75.49101739615622!3d31.322518086143994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391a5a5747a9eb91%3A0xc74b34c05aa5b4b8!2sJalandhar%2C%20Punjab!5e0!3m2!1sen!2sin!4v1775804615709!5m2!1sen!2sin"
+                            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d13774546.535066167!2d77.7919254406362!3d21.878762103143828!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1778922567467!5m2!1sen!2sin"
                             width="100%"
                             height={500}
                             style={{ border: 0 }}
@@ -43,7 +102,7 @@ export default function Contact() {
                                     </div>
                                     <div className="info-content">
                                         <h4>Location</h4>
-                                        <p>482 Pine Street, Seattle, Washington 98101</p>
+                                        <p>City Municipal Help Center, Jalandhar, Punjab, India</p>
                                     </div>
                                 </div>
                             </div>
@@ -54,8 +113,8 @@ export default function Contact() {
                                     </div>
                                     <div className="info-content">
                                         <h4>Phone &amp; Email</h4>
-                                        <p>+1 (206) 555-0192</p>
-                                        <p>connect@example.com</p>
+                                        <p>Helpline: +91 1800-123-4567</p>
+                                        <p>support@civora.gov.in</p>
                                     </div>
                                 </div>
                             </div>
@@ -67,78 +126,164 @@ export default function Contact() {
                             data-aos-delay={200}
                         >
                             <div className="col-lg-10">
-                                <div className="contact-form-wrapper">
-                                    <h2 className="text-center mb-4">Send a Message</h2>
+
+                                <div className="contact-form-wrapper shadow-lg p-5 rounded-5">
+
+                                    {/* HEADING */}
+                                    <div className="text-center mb-5">
+
+                                        <span className="badge bg-success-subtle text-success px-3 py-2 rounded-pill mb-3">
+                                            CONTACT CIVORA
+                                        </span>
+
+                                        <h2 className="fw-bold mb-3 pt-3">
+                                            Send Us a Message
+                                        </h2>
+
+                                        <p className="text-muted">
+                                            Have questions, feedback, or civic concerns? Our team is here to help you.
+                                        </p>
+
+                                    </div>
+
+                                    {/* FORM */}
                                     <form
-                                        action="forms/contact.php"
-                                        method="post"
                                         className="php-email-form"
+                                        onSubmit={handleContactForm}
                                     >
-                                        <div className="row g-3">
+
+                                        <div className="row g-4">
+
+                                            {/* NAME */}
                                             <div className="col-md-6">
                                                 <div className="form-group">
+
+                                                    <label className="form-label fw-semibold mb-2">
+                                                        Full Name
+                                                    </label>
+
                                                     <input
                                                         type="text"
-                                                        className="form-control"
+                                                        className="form-control custom-input"
                                                         name="name"
-                                                        placeholder="Your Name"
+                                                        placeholder="Enter your name"
                                                         required=""
+                                                        value={contactName}
+                                                        onChange={(e) => setContactName(e.target.value)}
                                                     />
+
                                                 </div>
                                             </div>
+
+                                            {/* EMAIL */}
                                             <div className="col-md-6">
                                                 <div className="form-group">
+
+                                                    <label className="form-label fw-semibold mb-2">
+                                                        Email Address
+                                                    </label>
+
                                                     <input
                                                         type="email"
-                                                        className="form-control"
+                                                        className="form-control custom-input"
                                                         name="email"
-                                                        placeholder="Email Address"
+                                                        placeholder="Enter your email"
                                                         required=""
+                                                        value={contactEmail}
+                                                        onChange={(e) => setContactEmail(e.target.value)}
                                                     />
+
                                                 </div>
                                             </div>
+
+                                            {/* SUBJECT */}
                                             <div className="col-12">
                                                 <div className="form-group">
+
+                                                    <label className="form-label fw-semibold mb-2">
+                                                        Subject
+                                                    </label>
+
                                                     <input
                                                         type="text"
-                                                        className="form-control"
+                                                        className="form-control custom-input"
                                                         name="subject"
-                                                        placeholder="Subject"
+                                                        placeholder="Enter subject"
                                                         required=""
+                                                        value={subject}
+                                                        onChange={(e) => setSubject(e.target.value)}
                                                     />
+
                                                 </div>
                                             </div>
+
+                                            {/* MESSAGE */}
                                             <div className="col-12">
                                                 <div className="form-group">
+
+                                                    <label className="form-label fw-semibold mb-2">
+                                                        Message
+                                                    </label>
+
                                                     <textarea
-                                                        className="form-control"
+                                                        className="form-control custom-input"
                                                         name="message"
-                                                        placeholder="Your Message"
-                                                        rows={6}
+                                                        placeholder="Write your message here..."
+                                                        rows={4}
                                                         required=""
-                                                        defaultValue={""}
+                                                        value={message}
+                                                        onChange={(e) => setMessage(e.target.value)}
                                                     />
                                                 </div>
                                             </div>
+
+                                            {/* STATUS */}
                                             <div className="col-12">
-                                                <div className="loading">Loading</div>
-                                                <div className="error-message" />
-                                                <div className="sent-message">
-                                                    Your message has been sent. Thank you!
+
+                                                <div className="loading text-muted">
+                                                    Loading...
                                                 </div>
+
+                                                <div className="error-message" />
+
+                                                <div className="sent-message text-success fw-semibold">
+                                                    Your message has been sent successfully!
+                                                </div>
+
                                             </div>
+
+                                            {/* BUTTON */}
                                             <div className="col-12 text-center">
-                                                <button type="submit" className="btn-submit">
-                                                    SEND MESSAGE
+                                                <button
+                                                    type="submit"
+                                                    className="btn btn-submit btn-success px-5 py-3 fw-semibold shadow-sm"
+                                                    disabled={loading}
+                                                >
+                                                    {loading ? (
+                                                        <>
+                                                            <span
+                                                                className="spinner-border spinner-border-sm me-2"
+                                                                role="status"
+                                                            />
+                                                            Sending...
+                                                        </>
+                                                    ) : (
+                                                        "SEND MESSAGE"
+                                                    )}
                                                 </button>
                                             </div>
+
                                         </div>
+
                                     </form>
+
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </section>
+
                 {/* /Contact Section */}
             </main>
         </>

@@ -74,7 +74,8 @@ const dashboard = async (req, res) => {
             .sort({ createdAt: -1 })
             .limit(10)
             .populate("categoryId", "name")
-            .populate("reportedBy");
+            .populate("reportedBy", "name")
+            .populate("assignedTo", "name");
 
         const counts = statsAgg[0] || {
             total: 0,

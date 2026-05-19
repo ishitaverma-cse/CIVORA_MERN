@@ -28,6 +28,8 @@ import Home from "./components/pages/user/Home"
 import About from './components/pages/user/About'
 import IssuesPage from "./components/pages/user/issues/IssuesPage"
 import Contact from './components/pages/user/Contact'
+import Notification from './components/pages/user/Notification'
+
 
 import { ToastContainer } from 'react-toastify'
 
@@ -68,6 +70,7 @@ export default function App() {
           <Route path="/about" element={<About></About>}></Route>
           <Route path="/issues" element={<IssuesPage></IssuesPage>}></Route>
           <Route path="/contact" element={<Contact></Contact>}></Route>
+          <Route path="/notifications" element={<Notification></Notification>}></Route>
  
 
           </Route>

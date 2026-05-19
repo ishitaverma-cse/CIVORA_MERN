@@ -66,3 +66,10 @@ export const ALLASSIGNMENT = '/admin/assignment/all'
 export const SINGLEASSIGNMENT = '/admin/assignment/single'
 export const UPDATEASSIGNMENT = '/admin/assignment/update'
 export const DELETEASSIGNMENT = '/admin/assignment/softDelete'
+
+//Contact
+export const ADDCONTACT = '/citizen/contact/add'
+
+//Notification
+export const MYNOTIFICATIONS = '/citizen/notification/myNotifications'
+export const ADMIN_NOTIFICATIONS = '/admin/notification/admin'

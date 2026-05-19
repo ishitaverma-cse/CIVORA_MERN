@@ -249,7 +249,6 @@ export default function EmpIssues() {
 
     return (
         <>
-            
             {/* SECTION TITLE */}
                 <div className="page-title light-background">
                     <div className="container d-lg-flex justify-content-between align-items-center">

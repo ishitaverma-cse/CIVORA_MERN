@@ -44,11 +44,11 @@ const add = async (req, res) => {
             let savedassignment = await assignmentData.save();
 
 
-// ✅ ADD THIS (VERY IMPORTANT)
-await issueModel.findByIdAndUpdate(
-    incomingData.issueId,
-    { assignedTo: incomingData.employeeId }
-);
+            // ADD THIS 
+            await issueModel.findByIdAndUpdate(
+                incomingData.issueId,
+                { assignedTo: incomingData.employeeId }
+            );
             res.json({
                 status: 201,
                 success: true,

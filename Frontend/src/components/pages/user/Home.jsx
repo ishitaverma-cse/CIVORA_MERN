@@ -368,7 +368,7 @@ export default function Home() {
                             </div>
                         </div>
 
-                        
+
                     </div>
 
                 </div>
@@ -376,177 +376,178 @@ export default function Home() {
             </section>
 
             {/* ================= HOW CIVORA WORKS ================= */}
-            <section className="civora-flow-section">
-                <div className="container-fluid px-lg-5">
+            <section className="city-flow-section">
+                <div
+                    className="min-vh-100 py-4"
+                    style={{ background: "#f8f9fa" }}
+                >
+                    <div className="container-fluid px-lg-5">
 
-                    {/* HEADING */}
-                    <div className="flow-heading text-center">
-                        <span className="flow-badge">
-                            HOW IT WORKS
-                        </span>
-
-                        <h2>
-                            A Smarter Way To Manage Civic Issues
-                        </h2>
-
-                        <p>
-                            CIVORA connects citizens, municipal departments and field
-                            employees through a seamless digital governance ecosystem.
-                        </p>
-
-                    </div>
-
-                    {/* ROW 1 */}
-                    <div className="flow-row">
-
-                        {/* IMAGE */}
-                        <div className="flow-image">
-                            <img
-                                src="/assets/img/city/report_issue.jpg"
-                                alt="Report Issue"
-                            />
-                        </div>
-
-                        {/* CONTENT */}
-                        <div className="flow-content">
-                            <span className="flow-step">
-                                STEP 01
+                        {/* HEADING */}
+                        <div className="flow-heading text-center">
+                            <span className="flow-badge">
+                                HOW IT WORKS
                             </span>
 
-                            <h3>
-                                Report Civic Problems Instantly
-                            </h3>
+                            <h2>
+                                A Smarter Way To Manage Civic Issues
+                            </h2>
 
                             <p>
-                                Citizens can easily report potholes, garbage,
-                                water leakage, damaged roads and infrastructure
-                                problems using images, location and descriptions.
+                                CIVORA connects citizens, municipal departments and field
+                                employees through a seamless digital governance ecosystem.
                             </p>
 
-                            <div className="flow-points">
+                        </div>
 
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Upload issue photos instantly
-                                </div>
+                        {/* ROW 1 */}
+                        <div className="flow-row">
 
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Real-time location tracking
-                                </div>
+                            {/* IMAGE */}
+                            <div className="flow-image">
+                                <img
+                                    src="/assets/img/city/report_issue.jpg"
+                                    alt="Report Issue"
+                                />
+                            </div>
 
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Fast and transparent reporting
+                            {/* CONTENT */}
+                            <div className="flow-content">
+                                <span className="flow-step">
+                                    STEP 01
+                                </span>
+
+                                <h3>
+                                    Report Civic Problems Instantly
+                                </h3>
+
+                                <p>
+                                    Citizens can easily report potholes, garbage,
+                                    water leakage, damaged roads and infrastructure
+                                    problems using images, location and descriptions.
+                                </p>
+
+                                <div className="flow-points">
+
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Upload issue photos instantly
+                                    </div>
+
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Real-time location tracking
+                                    </div>
+
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Fast and transparent reporting
+                                    </div>
+
                                 </div>
 
                             </div>
 
                         </div>
 
-                    </div>
+                        {/* ROW 2 */}
+                        <div className="flow-row reverse-flow">
 
-                    {/* ROW 2 */}
-                    <div className="flow-row reverse-flow">
+                            {/* IMAGE */}
+                            <div className="flow-image">
+                                <img
+                                    src="/assets/img/city/smart_assignment.jpg"
+                                    alt="Assignment"
+                                />
+                            </div>
 
-                        {/* IMAGE */}
-                        <div className="flow-image">
-                            <img
-                                src="/assets/img/city/smart_assignment.jpg"
-                                alt="Assignment"
-                            />
-                        </div>
+                            {/* CONTENT */}
+                            <div className="flow-content">
+                                <span className="flow-step">
+                                    STEP 02
+                                </span>
 
-                        {/* CONTENT */}
-                        <div className="flow-content">
-                            <span className="flow-step">
-                                STEP 02
-                            </span>
+                                <h3>
+                                    Smart Department Assignment
+                                </h3>
 
-                            <h3>
-                                Smart Department Assignment
-                            </h3>
+                                <p>
+                                    CIVORA intelligently routes complaints to the
+                                    correct municipal departments and employees
+                                    for quick response and efficient handling.
+                                </p>
 
-                            <p>
-                                CIVORA intelligently routes complaints to the
-                                correct municipal departments and employees
-                                for quick response and efficient handling.
-                            </p>
+                                <div className="flow-points">
 
-                            <div className="flow-points">
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Automated workflow system
+                                    </div>
 
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Automated workflow system
-                                </div>
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Faster complaint allocation
+                                    </div>
 
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Faster complaint allocation
-                                </div>
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Reduced manual delays
+                                    </div>
 
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Reduced manual delays
                                 </div>
 
                             </div>
 
                         </div>
 
-                    </div>
+                        {/* ROW 3 */}
+                        <div className="flow-row">
 
-                    {/* ROW 3 */}
-                    <div className="flow-row">
-
-                        {/* IMAGE */}
-                        <div className="flow-image">
-                            <img
-                                src="/assets/img/city/track_progress.jpg"
-                                alt="Track Progress"
-                            />
-                        </div>
-
-                        {/* CONTENT */}
-                        <div className="flow-content">
-                            <span className="flow-step">
-                                STEP 03
-                            </span>
-
-                            <h3>
-                                Track Resolution Progress Live
-                            </h3>
-
-                            <p>
-                                Citizens receive real-time updates regarding
-                                complaint progress, employee actions and final
-                                issue resolution directly through the platform.
-                            </p>
-
-                            <div className="flow-points">
-
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Live complaint status updates
-                                </div>
-
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Improved accountability
-                                </div>
-
-                                <div>
-                                    <i className="bi bi-check-circle-fill"></i>
-                                    Better citizen engagement
-                                </div>
-
+                            {/* IMAGE */}
+                            <div className="flow-image">
+                                <img
+                                    src="/assets/img/city/track_progress.jpg"
+                                    alt="Track Progress"
+                                />
                             </div>
 
+                            {/* CONTENT */}
+                            <div className="flow-content">
+                                <span className="flow-step">
+                                    STEP 03
+                                </span>
+
+                                <h3>
+                                    Track Resolution Progress Live
+                                </h3>
+
+                                <p>
+                                    Citizens receive real-time updates regarding
+                                    complaint progress, employee actions and final
+                                    issue resolution directly through the platform.
+                                </p>
+
+                                <div className="flow-points">
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Live complaint status updates
+                                    </div>
+
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Improved accountability
+                                    </div>
+
+                                    <div>
+                                        <i className="bi bi-check-circle-fill"></i>
+                                        Better citizen engagement
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
-
                 </div>
+
 
             </section>
 

@@ -4,13 +4,36 @@ const notificationSchema = new mongoose.Schema({
     autoId: { type: Number, unique: true, required: true },
     // receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User",  },
     // senderId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
-    issueId: { type: mongoose.Schema.Types.ObjectId, ref: "Issue" }, 
+    issueId: { type: mongoose.Schema.Types.ObjectId, ref: "issue" },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-
-    type: { type: String, enum: ["ISSUE_ASSIGNED", "STATUS_UPDATED", "ISSUE_RESOLVED", "UPVOTED"] },
+    isAdmin: { type: Boolean, default: false },
+    reportedBy: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
+    type: {
+        type: String,
+        enum: [
+            "ISSUE_REPORTED",
+            "ISSUE_ASSIGNED",
+            "STATUS_UPDATED",
+            "EMPLOYEE_REMARK",
+            "ISSUE_RESOLVED",
+            "UPVOTED"
+        ]
+    },
+    status: {
+        type: String,
+        enum: [
+            "Pending",
+            "Assigned",
+            "In Progress",
+            "Resolved",
+            "Rejected"
+        ]
+    },
     message: { type: String, required: true },
-    isRead: { type: Boolean, default: false },
+    remark: { type: String, default: "" },
+    proofImage: { type: String, default: "" },
 
+    isRead: { type: Boolean, default: false },
     isBlock: { type: Boolean, default: false },
     isDelete: { type: Boolean, default: false },
 },

@@ -5,28 +5,30 @@ import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { register } from "../../../services/userService";
 import { login } from "../../../services/userService";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 import { sendOtp, resetPassword } from "../../../services/userService";
+import { FaBell } from "react-icons/fa";
+import { myNotifications } from "../../../services/NotificationService";
 
 export default function UserHeader() {
-
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
 
     const [showRegisterModal, setShowRegisterModal] = useState(false);
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [phone, setPhone] = useState('');
-    const [gender, setGender] = useState('');
-    const [address, setAddress] = useState('');
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [phone, setPhone] = useState("");
+    const [gender, setGender] = useState("");
+    const [address, setAddress] = useState("");
 
     const [showForgotModal, setShowForgotModal] = useState(false);
     const [forgotEmail, setForgotEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [notificationCount, setNotificationCount] = useState(0);
 
     const isLogin = localStorage.getItem("isLogin");
     const navigate = useNavigate();
@@ -35,53 +37,40 @@ export default function UserHeader() {
 
     //HANDLE REGISTER FORM
     async function handleRegisterForm(e) {
-
         e.preventDefault();
 
-        if (
-            !name ||
-            !email ||
-            !password ||
-            !phone ||
-            !gender ||
-            !address
-        ) {
+        if (!name || !email || !password || !phone || !gender || !address) {
             toast.error("Please fill all credentials");
             return;
         }
 
         try {
-
             let formData = {
                 name,
                 email,
                 password,
                 phone,
                 address,
-                gender
+                gender,
             };
 
             let res = await register(formData);
 
             if (res.data.success) {
-
                 toast.success("Registered Successfully");
 
                 setShowRegisterModal(false);
 
-                setName('');
-                setEmail('');
-                setPassword('');
-                setPhone('');
-                setGender('');
-                setAddress('');
-
+                setName("");
+                setEmail("");
+                setPassword("");
+                setPhone("");
+                setGender("");
+                setAddress("");
             } else {
                 toast.error(res.data.message);
             }
-
         } catch (err) {
-
             console.log(err);
 
             toast.error("Something went wrong");
@@ -93,15 +82,9 @@ export default function UserHeader() {
             setShowRegisterModal(true);
         };
 
-        window.addEventListener(
-            "openRegisterModal",
-            openModal
-        );
+        window.addEventListener("openRegisterModal", openModal);
         return () => {
-            window.removeEventListener(
-                "openRegisterModal",
-                openModal
-            );
+            window.removeEventListener("openRegisterModal", openModal);
         };
     }, []);
 
@@ -115,23 +98,21 @@ export default function UserHeader() {
         }
 
         try {
-
             let formData = {
                 email: loginEmail,
                 password: loginPassword,
-                isBlocked: false
+                isBlocked: false,
             };
 
             let res = await login(formData);
 
             if (res.data.success) {
-
                 localStorage.setItem("token", res.data.token);
                 localStorage.setItem("isLogin", true);
                 localStorage.setItem("userId", res.data.data._id);
                 localStorage.setItem(
                     "isBlocked",
-                    res.data.data.isBlocked ? "true" : "false"
+                    res.data.data.isBlocked ? "true" : "false",
                 );
 
                 toast.success(res.data.message);
@@ -142,17 +123,14 @@ export default function UserHeader() {
 
                 if (userType === 1) {
                     navigate("/admin/adminDashboard");
-                }
-                else if (userType === 2) {
+                } else if (userType === 2) {
                     navigate("/employee/dashboard");
-                }
-                else {
+                } else {
                     navigate("/");
                 }
             } else {
                 toast.error(res.data.message);
             }
-
         } catch (err) {
             console.log(err);
             toast.error("Something went wrong");
@@ -162,21 +140,14 @@ export default function UserHeader() {
         const openLogin = () => {
             setShowLoginModal(true);
         };
-        window.addEventListener(
-            "openLoginModal",
-            openLogin
-        );
+        window.addEventListener("openLoginModal", openLogin);
         return () => {
-            window.removeEventListener(
-                "openLoginModal",
-                openLogin
-            );
+            window.removeEventListener("openLoginModal", openLogin);
         };
     }, []);
 
     // SEND OTP
     async function handleSendOtp() {
-
         if (!forgotEmail) {
             toast.error("Email required");
             return;
@@ -185,72 +156,71 @@ export default function UserHeader() {
         try {
             console.log("OTP CLICKED");
 
-            console.log("email: ", forgotEmail)
+            console.log("email: ", forgotEmail);
 
             let res = await sendOtp({
-                email: forgotEmail
+                email: forgotEmail,
             });
 
             if (res.data.success) {
-
                 toast.success("OTP sent to email");
-
             } else {
-
                 toast.error(res.data.message);
             }
-
         } catch (err) {
-
             toast.error(err);
         }
     }
 
     // RESET PASSWORD
     async function handleResetPassword(e) {
-
         e.preventDefault();
 
-        if (
-            !forgotEmail ||
-            !otp ||
-            !newPassword ||
-            !confirmPassword
-        ) {
-
+        if (!forgotEmail || !otp || !newPassword || !confirmPassword) {
             toast.error("All fields required");
             return;
         }
 
         try {
-
             let res = await resetPassword({
-
                 email: forgotEmail,
                 otp,
                 newPassword,
-                confirmPassword
-
+                confirmPassword,
             });
 
             if (res.data.success) {
-
                 toast.success("Password Reset Successful");
 
                 setShowForgotModal(false);
 
                 setShowLoginModal(true);
-
             } else {
-
                 toast.error(res.data.message);
             }
-
         } catch (err) {
-
             toast.error("Something went wrong");
         }
     }
+
+    //FETCH NOTIF. COUNT
+    const fetchNotificationCount = async () => {
+        try {
+
+            const userId = localStorage.getItem("userId");
+            const res = await myNotifications({ userId });
+
+            if (res.data.success) {
+                setNotificationCount(res.data.data.length);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    useEffect(() => {
+        fetchNotificationCount();
+    }, []);
+
 
     return (
         <>
@@ -258,9 +228,7 @@ export default function UserHeader() {
                 <div className="branding d-flex align-items-cente">
                     <div className="container position-relative d-flex align-items-center justify-content-between">
                         <div className="logo d-flex align-items-center">
-                            {/* Uncomment the line below if you also wish to use an image logo */}
-                            {/* <img src="assets/img/logo.webp" alt=""> */}
-                            <h1 className="sitename" >CIVORA</h1>
+                            <h1 className="sitename">CIVORA</h1>
                         </div>
                         <nav id="navmenu" className="navmenu">
                             <ul>
@@ -282,46 +250,103 @@ export default function UserHeader() {
                                     <Link to="/contact">Contact</Link>
                                 </li>
 
-                                {!isLogin ? (<>
+                                {!isLogin ? (
+                                    <>
+                                        <li className="navmenu ps-2">
+                                            <button
+                                                onClick={() => setShowRegisterModal(true)}
+                                                className="btn btn-subtle-success border border-dark text-white rounded-3 px-4 shadow"
+                                            >
+                                                <i className="bi bi-box-arrow-in-right me-2"></i>
+                                                Register
+                                            </button>
+                                        </li>
+                                        <li className="navmenu p-4">
+                                            <button
+                                                onClick={() => setShowLoginModal(true)}
+                                                className="btn btn-subtle-success border border-dark text-white rounded-3 px-4 shadow"
+                                            >
+                                                <i className="bi bi-box-arrow-in-right me-2"></i>
+                                                Login
+                                            </button>
+                                        </li>
+                                    </>
+                                ) : (
                                     <li className="navmenu">
                                         <button
-                                            onClick={() => setShowRegisterModal(true)}
-                                            className="btn btn-subtle-success border border-dark text-white rounded-3 px-4 shadow"
+                                            onClick={() => {
+                                                localStorage.removeItem("isLogin");
+                                                localStorage.removeItem("token");
+                                                localStorage.removeItem("userId");
+
+                                                navigate("/");
+                                            }}
+                                            className="btn btn-subtle-success borfer border-dark text-white rounded-3 px-4 shadow"
                                         >
-                                            <i className="bi bi-box-arrow-in-right me-2"></i>
-                                            Register
+                                            <i className="bi bi-door-open me-2"></i>
+                                            Logout
                                         </button>
                                     </li>
-                                    <li className="navmenu p-4">
+                                )}
 
-                                        <button
-                                            onClick={() => setShowLoginModal(true)}
-                                            className="btn btn-subtle-success border border-dark text-white rounded-3 px-4 shadow"
+                                  <li className="navmenu ps-0">
+                                    <Link
+                                        to="/notifications"
+                                        style={{
+                                            position: "relative",
+                                            textDecoration: "none"
+                                        }}
+                                    >
+                                        {/* BELL CONTAINER */}
+                                        <div
+                                        className="ps-2"
+                                            style={{
+                                                width: "46px",
+                                                height: "46px",
+                                                borderRadius: "70%",
+                                                background: "rgba(255,255,255,0.12)",
+                                                backdropFilter: "blur(10px)",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                border: "1px solid rgba(255,255,255,0.15)",
+                                                boxShadow: "0 6px 18px rgba(0,0,0,0.12)"
+                                            }}
                                         >
-                                            <i className="bi bi-box-arrow-in-right me-2"></i>
-                                            Login
-                                        </button>
+                                            <FaBell
+                                                size={50}
+                                                color="white"
+                                            />
+                                        </div>
 
-                                    </li>
-                                </>
-                                ) : (<li className="navmenu">
-
-                                    <button onClick={() => {
-                                        localStorage.removeItem("isLogin");
-                                        localStorage.removeItem("token");
-                                        localStorage.removeItem("userId");
-
-                                        navigate("/");
-
-                                    }} className="btn btn-subtle-success borfer border-dark text-white rounded-3 px-4 shadow" >
-                                        <i className="bi bi-door-open me-2"></i>
-                                        Logout
-                                    </button>
-
-                                </li>)
-
-                                }
-
+                                        {/* NOTIFICATION COUNT */}
+                                        {
+                                            notificationCount > 0 && (
+                                                <span
+                                                    style={{
+                                                        position: "absolute",
+                                                        top: "5px",
+                                                        right: "-1px",
+                                                        background: "#198754",
+                                                        color: "white",
+                                                        minWidth: "22px",
+                                                        height: "22px",
+                                                        borderRadius: "50%",
+                                                        fontSize: "11px",
+                                                        fontWeight: "700",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        border: "2px solid white",
+                                                        boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+                                                    }}
+                                                >
+                                                    {notificationCount}
+                                                </span>
+                                            )
+                                        }
+                                    </Link>
+                                </li>
                             </ul>
                             <i className="mobile-nav-toggle d-xl-none bi bi-list" />
                         </nav>
@@ -336,7 +361,6 @@ export default function UserHeader() {
                 className="register-modal"
                 overlayClassName="register-overlay"
             >
-
                 <button
                     className="close-modal"
                     onClick={() => setShowRegisterModal(false)}
@@ -345,12 +369,9 @@ export default function UserHeader() {
                 </button>
 
                 <div className="register-container">
-
                     {/* LEFT FORM SIDE */}
                     <div className="register-left">
-
                         <div className="register-content text-center">
-
                             <h2>Create Account</h2>
 
                             <p className="text-dark">
@@ -359,10 +380,8 @@ export default function UserHeader() {
 
                             <p className="register-switch-text text-dark">
                                 Already have an account?
-
                                 <span
                                     onClick={() => {
-
                                         setShowRegisterModal(false);
 
                                         setShowLoginModal(true);
@@ -373,9 +392,7 @@ export default function UserHeader() {
                             </p>
 
                             <form onSubmit={handleRegisterForm}>
-
                                 <div className="register-grid">
-
                                     <input
                                         type="text"
                                         placeholder="Full Name"
@@ -391,7 +408,6 @@ export default function UserHeader() {
                                         value={phone}
                                         onChange={(e) => setPhone(e.target.value)}
                                     />
-
                                 </div>
 
                                 <input
@@ -413,9 +429,15 @@ export default function UserHeader() {
                                     onChange={(e) => setGender(e.target.value)}
                                 >
                                     <option className="text-muted">Select Gender</option>
-                                    <option className="text-dark" value="Male">Male</option>
-                                    <option className="text-dark" value="Female">Female</option>
-                                    <option className="text-dark" value="Other">Other</option>
+                                    <option className="text-dark" value="Male">
+                                        Male
+                                    </option>
+                                    <option className="text-dark" value="Female">
+                                        Female
+                                    </option>
+                                    <option className="text-dark" value="Other">
+                                        Other
+                                    </option>
                                 </select>
 
                                 <textarea
@@ -427,25 +449,15 @@ export default function UserHeader() {
                                 <button type="submit" className="bg-success">
                                     Register
                                 </button>
-
                             </form>
-
                         </div>
-
                     </div>
 
                     {/* RIGHT IMAGE SIDE */}
                     <div className="register-right">
-
-                        <img
-                            src="/assets/img/city/login_header.jpg"
-                            alt="city"
-                        />
-
+                        <img src="/assets/img/city/login_header.jpg" alt="city" />
                     </div>
-
                 </div>
-
             </Modal>
 
             {/* LOGIN */}
@@ -455,7 +467,6 @@ export default function UserHeader() {
                 className="register-modal"
                 overlayClassName="register-overlay"
             >
-
                 <button
                     className="close-modal"
                     onClick={() => setShowLoginModal(false)}
@@ -464,12 +475,9 @@ export default function UserHeader() {
                 </button>
 
                 <div className="register-container">
-
                     {/* LEFT SIDE */}
                     <div className="register-left">
-
                         <div className="register-content text-center">
-
                             <h2>Welcome Back</h2>
 
                             <p className="text-dark">
@@ -478,7 +486,6 @@ export default function UserHeader() {
 
                             <p className="register-switch-text text-dark">
                                 New to our Community?
-
                                 <span
                                     onClick={() => {
                                         setShowLoginModal(false);
@@ -498,70 +505,57 @@ export default function UserHeader() {
                             </button>
 
                             <div className="auth-divider">
-
                                 <hr />
 
                                 <span>Or Sign in with email</span>
 
                                 <hr />
-
                             </div>
 
                             <form onSubmit={handleLoginForm}>
-
                                 <input
                                     type="email"
                                     placeholder="Email Address"
                                     value={loginEmail}
-                                    onChange={(e) =>
-                                        setLoginEmail(e.target.value)
-                                    }
+                                    onChange={(e) => setLoginEmail(e.target.value)}
                                 />
 
                                 <input
                                     type="password"
                                     placeholder="Password"
                                     value={loginPassword}
-                                    onChange={(e) =>
-                                        setLoginPassword(e.target.value)
-                                    }
+                                    onChange={(e) => setLoginPassword(e.target.value)}
                                 />
 
                                 <div className="text-end">
-
-                                    <span className="forgot-link"
-                                     style={{ cursor: "pointer" }}
+                                    <span
+                                        className="forgot-link"
+                                        style={{ cursor: "pointer" }}
                                         onClick={() => {
                                             setShowForgotModal(true);
                                             setShowLoginModal(false);
-                                        }}>
+                                        }}
+                                    >
                                         Forgot Password?
                                     </span>
-
                                 </div>
 
-                                <button type="submit" className="rounded-pill btn btn-success p-0" style={{ color: "white", border: "none" }}>
+                                <button
+                                    type="submit"
+                                    className="rounded-pill btn btn-success p-0"
+                                    style={{ color: "white", border: "none" }}
+                                >
                                     Log In
                                 </button>
-
                             </form>
-
                         </div>
-
                     </div>
 
                     {/* RIGHT IMAGE */}
                     <div className="register-right">
-
-                        <img
-                            src="/assets/img/city/login_header.jpg"
-                            alt="login"
-                        />
-
+                        <img src="/assets/img/city/login_header.jpg" alt="login" />
                     </div>
-
                 </div>
-
             </Modal>
 
             {/* FORGOT PASSWORD MODAL */}
@@ -571,7 +565,6 @@ export default function UserHeader() {
                 className="login-modal"
                 overlayClassName="register-overlay"
             >
-
                 <button
                     className="close-modal"
                     onClick={() => setShowForgotModal(false)}
@@ -580,48 +573,36 @@ export default function UserHeader() {
                 </button>
 
                 <div className="register-container">
-
                     {/* LEFT SIDE */}
                     <div className="register-left">
-
                         <div className="register-content text-center">
-
                             <h2>Reset Password</h2>
 
                             <p className="text-dark mb-3">
-                                <b>
-                                    Setup a new secure password
-                                </b>
+                                <b>Setup a new secure password</b>
                             </p>
 
                             <form onSubmit={handleResetPassword}>
-
                                 {/* EMAIL + OTP */}
                                 <div className="register-grid">
-
                                     <input
                                         type="email"
                                         placeholder="Email Address"
                                         value={forgotEmail}
-                                        onChange={(e) =>
-                                            setForgotEmail(e.target.value)
-                                        }
+                                        onChange={(e) => setForgotEmail(e.target.value)}
                                     />
 
                                     <div
                                         style={{
                                             display: "flex",
-                                            gap: "10px"
+                                            gap: "10px",
                                         }}
                                     >
-
                                         <input
                                             type="text"
                                             placeholder="OTP"
                                             value={otp}
-                                            onChange={(e) =>
-                                                setOtp(e.target.value)
-                                            }
+                                            onChange={(e) => setOtp(e.target.value)}
                                         />
 
                                         <button
@@ -631,9 +612,7 @@ export default function UserHeader() {
                                         >
                                             Send
                                         </button>
-
                                     </div>
-
                                 </div>
 
                                 {/* NEW PASSWORD */}
@@ -641,9 +620,7 @@ export default function UserHeader() {
                                     type="password"
                                     placeholder="New Password"
                                     value={newPassword}
-                                    onChange={(e) =>
-                                        setNewPassword(e.target.value)
-                                    }
+                                    onChange={(e) => setNewPassword(e.target.value)}
                                 />
 
                                 {/* CONFIRM PASSWORD */}
@@ -651,16 +628,13 @@ export default function UserHeader() {
                                     type="password"
                                     placeholder="Confirm Password"
                                     value={confirmPassword}
-                                    onChange={(e) =>
-                                        setConfirmPassword(e.target.value)
-                                    }
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
                                 />
 
                                 {/* SUBMIT */}
                                 <button type="submit" className="bg-success">
                                     Submit
                                 </button>
-
                             </form>
 
                             {/* BACK TO LOGIN */}
@@ -674,28 +648,19 @@ export default function UserHeader() {
                                 >
                                     Sign In
                                 </span>
-
                             </p>
-
                         </div>
-
                     </div>
 
                     {/* RIGHT IMAGE */}
                     <div className="register-right">
-
                         <img
                             src="/assets/img/city/login_header.jpg"
                             alt="forgot-password"
                         />
-
                     </div>
-
                 </div>
-
             </Modal>
-
-
         </>
-    )
+    );
 }

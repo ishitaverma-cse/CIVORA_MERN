@@ -13,6 +13,7 @@ export default function PublicIssues() {
     const [categories, setCategories] = useState([]);
     const [statusFilter, setStatusFilter] = useState("All");
     const [categoryFilter, setCategoryFilter] = useState("");
+    const [visibleCount, setVisibleCount] = useState(3);
 
     //FETCH MY ISSUES
     async function fetchMyIssues() {
@@ -165,19 +166,21 @@ export default function PublicIssues() {
     };
     useEffect(() => {
         fetchIssues();
+        setVisibleCount(3);
     }, [statusFilter, categoryFilter]);
+
 
     return (
         <>
             <main className="main py-3">
-                <div className="container section-title pt-0">
+                <div className="container section-title">
                     <span className="description-title">Public Issues</span>
                     <h2>Public Issues</h2>
                 </div>
 
                 <section className="filters-section ">
                     <div className="container">
-                        <div className="filters-wrapper p-3">
+                        <div className="filters-wrapper">
                             {/* 🔹 Filters */}
                             <div
                                 className="p-4 rounded-5 shadow-sm mb-1"
@@ -288,7 +291,7 @@ export default function PublicIssues() {
                             // ISSUES LIST
                             <div className="row">
 
-                                {issues.map((issue) => (
+                                {issues.slice(0, visibleCount).map((issue) => (
 
                                     <div className="col-md-4 p-4 mb-3 mt-3" key={issue._id}>
 
@@ -351,27 +354,41 @@ export default function PublicIssues() {
                                                 </div>
 
                                                 {/* UPVOTE SECTION */}
-                                                <div className="d-flex align-items-center gap-2 mt-3">
+                                                <div className="d-flex align-items-center justify-content-between mt-4">
 
-                                                    <span
+                                                    {/* UPVOTE BUTTON */}
+                                                    <div
+                                                        className={`d-flex align-items-center gap-2 px-3 py-2 rounded-pill ${issue.isUpvoted ? "bg-success-subtle" : "bg-light"}`}
                                                         style={{
                                                             cursor: "pointer",
-                                                            fontSize: "25px",
-                                                            color: issue.isUpvoted ? "#0d6efd" : "#6c757d",
-                                                            transform: issue.isUpvoted ? "scale(1.2)" : "scale(1)",
-                                                            transition: "all 0.2s ease"
+                                                            transition: "0.3s ease",
+                                                            border: issue.isUpvoted
+                                                                ? "1px solid #198754"
+                                                                : "1px solid #dee2e6"
                                                         }}
                                                         onClick={() => handleUpvote(issue._id)}
                                                     >
-                                                        {issue.isUpvoted
-                                                            ? <FaThumbsUp />
-                                                            : <FaRegThumbsUp />
-                                                        }
-                                                    </span>
 
-                                                    <span className="small text-muted">
-                                                        {issue.upvotes}
-                                                    </span>
+                                                        <span
+                                                            style={{
+                                                                fontSize: "20px",
+                                                                color: issue.isUpvoted ? "#198754" : "#6c757d",
+                                                                transition: "0.2s ease"
+                                                            }}
+                                                        >
+                                                            {issue.isUpvoted
+                                                                ? <FaThumbsUp />
+                                                                : <FaRegThumbsUp />
+                                                            }
+                                                        </span>
+
+                                                        <span
+                                                            className={`fw-semibold small ${issue.isUpvoted ? "text-success" : "text-muted"}`}
+                                                        >
+                                                            {issue.upvotes} Upvotes
+                                                        </span>
+
+                                                    </div>
 
                                                 </div>
 
@@ -386,10 +403,17 @@ export default function PublicIssues() {
                             </div>
                         )}
 
-                        {/* 🔹 Load More */}
-                        <div className="text-center mt-4">
-                            <button className="btn btn-primary">Load More</button>
-                        </div>
+                        {/* LOAD MORE */}
+                        {visibleCount < issues.length && (
+                            <div className="text-center mt-4">
+                                <button
+                                    className="btn btn-success px-3 py-2 rounded-3"
+                                    onClick={() => setVisibleCount(prev => prev + 3)}
+                                >
+                                    Load More
+                                </button>
+                            </div>
+                        )}
 
                     </div>
                 </section>

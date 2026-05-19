@@ -27,7 +27,7 @@ export default function ManageUsers() {
     const [reason, setReason] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4;
+    const itemsPerPage = 5;
 
     // FETCH USERS
     const fetchUsers = async () => {

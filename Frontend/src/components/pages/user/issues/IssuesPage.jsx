@@ -4,7 +4,13 @@ import MyIssues from "./MyIssues";
 import PublicIssues from "./PublicIssues";
 
 export default function IssuesPage() {
-  const [activeTab, setActiveTab] = useState("my");
+
+  const userId = localStorage.getItem("userId");
+  const isLoggedIn = !!userId;
+  const [activeTab, setActiveTab] = useState(
+    isLoggedIn ? "my" : "public"
+  );
+
 
   return (
     <>
@@ -79,12 +85,15 @@ export default function IssuesPage() {
           {/* Responsive Styled Tabs */}
           <div className="tab-wrapper">
             <div className="segmented-control">
-              <button
-                className={`tab-button ${activeTab === "my" ? "active" : ""}`}
-                onClick={() => setActiveTab("my")}
-              >
-                <span>📄</span> My Issues
-              </button>
+
+              {isLoggedIn && (
+                <button
+                  className={`tab-button ${activeTab === "my" ? "active" : ""}`}
+                  onClick={() => setActiveTab("my")}
+                >
+                  <span>📄</span> My Issues
+                </button>
+              )}
 
               <button
                 className={`tab-button ${activeTab === "public" ? "active" : ""}`}
@@ -97,7 +106,7 @@ export default function IssuesPage() {
 
           {/* Tab Content */}
           <div className="issue-content-area">
-            {activeTab === "my" && <MyIssues />}
+            {activeTab === "my" && isLoggedIn && <MyIssues />}
             {activeTab === "public" && <PublicIssues />}
           </div>
         </div>
