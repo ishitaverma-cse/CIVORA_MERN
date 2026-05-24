@@ -95,23 +95,16 @@ export default function Home() {
                                     {slide.subtitle}
                                 </p>
 
-                                <div className="cta-group">
 
-                                    <Link
-                                        to="/issues"
-                                        className="btn btn-primary me-3"
-                                    >
+                                <Link
+                                    to="/issues"
+                                    className="btn btn-primary ms-5"
+                                >
+                                    <div>
                                         View Issues
-                                    </Link>
+                                    </div>
+                                </Link>
 
-                                    <Link
-                                        to="/login"
-                                        className="btn btn-outline-light"
-                                    >
-                                        Get Started
-                                    </Link>
-
-                                </div>
 
                             </div>
 

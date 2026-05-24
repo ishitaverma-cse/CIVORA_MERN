@@ -1,6 +1,7 @@
 const employeeModel = require('./employeeModel');
 const userModel = require('../user/userModel')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { upload } = require('../../middleware/multer');
 const saltRounds = 10;
 
 require("../category/categoryModel");
@@ -331,7 +332,7 @@ const updateProfile = async (req, res) => {
 
         // IMAGE
         if (req.file) {
-            updateData.profileImage = req.file.filename;
+            updateData.profileImage = upload(req.file.filename);
         }
 
         const updatedEmployee =

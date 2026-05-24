@@ -298,12 +298,12 @@ export default function PublicIssues() {
                                         <div className="issue-card h-100">
 
                                             {/* IMAGE */}
-                                            {issue.media && (
+                                            {issue.media && issue.media.length > 0 && (
 
                                                 <div className="issue-image">
 
                                                     <img
-                                                        src={`http://localhost:3000/${issue.media}`}
+                                                        src={`${issue.media[0]}`}
                                                         alt="issue"
                                                     />
 
@@ -319,7 +319,7 @@ export default function PublicIssues() {
                                                 </h5>
 
                                                 <p
-                                                    className="ellipsis text-muted small"
+                                                    className=" text-muted small"
                                                     title={issue.description}
                                                 >
                                                     {issue.description}
@@ -405,12 +405,12 @@ export default function PublicIssues() {
 
                         {/* LOAD MORE */}
                         {visibleCount < issues.length && (
-                            <div className="text-center mt-4">
+                            <div className="text-center m-4">
                                 <button
-                                    className="btn btn-success px-3 py-2 rounded-3"
+                                    className="btn btn-outline-success px-3 py-2 rounded-1"
                                     onClick={() => setVisibleCount(prev => prev + 3)}
                                 >
-                                    Load More
+                                    Load More Issues
                                 </button>
                             </div>
                         )}

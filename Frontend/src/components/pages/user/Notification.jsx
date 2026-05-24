@@ -6,9 +6,11 @@ import {
     FaTools
 } from "react-icons/fa";
 
-import { myNotifications } from "../../../services/NotificationService";
-export default function Notifications() {
+import { myNotifications, deleteNotifications } from "../../../services/NotificationService";
+import { toast } from "react-toastify";
 
+
+export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
 
     //FETCH NOTIFICATION
@@ -32,6 +34,27 @@ export default function Notifications() {
     useEffect(() => {
         fetchNotifications();
     }, []);
+
+    //HANDLE DELETE
+    const handleDeleteNotification = async (id) => {
+        try {
+            const res = await deleteNotifications({
+                _id: id
+            });
+
+            console.log(res.data);
+
+            if (res.data.success) {
+                setNotifications(prev =>
+                    prev.filter(item => item._id !== id)
+                );
+                toast.success("Notification deleted");
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to delete");
+        }
+    };
 
     return (
 
@@ -298,38 +321,54 @@ export default function Notifications() {
                                             {/* TOP */}
                                             <div
                                                 className="
-                                                d-flex
-                                                justify-content-between
-                                                flex-wrap
-                                                gap-2
-                                            "
+                                                    d-flex
+                                                    justify-content-between
+                                                    flex-wrap
+                                                    gap-2
+                                                    align-items-center
+                                                "
                                             >
 
                                                 <span
                                                     className={`
-                                                    badge
-                                                    px-4
-                                                    py-2
-                                                    rounded-pill
-                                                   ${badgeClass}
-                                                `}
+                                                        badge
+                                                        px-4
+                                                        py-2
+                                                        rounded-pill
+                                                        ${badgeClass}
+                                                   `}
                                                 >
                                                     {item.status}
                                                 </span>
 
-                                                <small className="text-muted">
+                                                <div className="d-flex align-items-center gap-2">
 
-                                                    {new Date(
-                                                        item.createdAt
-                                                    ).toLocaleString("en-IN")}
+                                                    <small className="text-muted">
+                                                        {new Date(item.createdAt).toLocaleString("en-IN")}
+                                                    </small>
 
-                                                </small>
+                                                    {/* DELETE BUTTON */}
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-danger rounded-pill"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+
+                                                            console.log("DELETE CLICKED");
+
+                                                            handleDeleteNotification(item._id);
+                                                        }}
+                                                    >
+                                                        🗑
+                                                    </button>
+
+                                                </div>
 
                                             </div>
 
                                             {/* MESSAGE */}
                                             <h4 className="fw-bold mt-4">
-
                                                 {item.message}
 
                                             </h4>
@@ -367,7 +406,7 @@ export default function Notifications() {
                                             {
                                                 item.proofImage && (
                                                     <img
-                                                        src={`http://localhost:3000/${item.proofImage}`}
+                                                        src={`http://localhost:3000/uploads/${item.proofImage}`}
                                                         alt="proof"
                                                         className="img-fluid rounded-4 mt-4 notification-proof"
                                                         style={{

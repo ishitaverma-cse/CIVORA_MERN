@@ -9,15 +9,23 @@ seeder.seed()
 const cors = require('cors')
 app.use(cors());
 
-app.use(express.static("server/uploads"))
+// app.use(express.static("server/uploads")) 
 
 app.use(express.urlencoded());
 app.use(express.json());              
            
 require('dotenv').config();          //env -> process.env
 
+
 //multer folder becomes publicly accessible via URL
-app.use("/uploads", require("express").static("uploads"));
+// app.use("/uploads", require("express").static("uploads"));
+// app.use("/uploads", express.static("server/uploads"));
+const path = require("path");
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "server/uploads"))
+);
+
 
 //calling .env
 const port = process.env.PORT                    
@@ -46,7 +54,7 @@ app.get('/', (req, res) => {                                //HTTP GET request(e
 })
 
 //for app listening
-app.listen(port, () => {
+app.listen(port, '0.0.0.0' , () => {
     console.log(`I am listening to port ${port}`)
 })
 

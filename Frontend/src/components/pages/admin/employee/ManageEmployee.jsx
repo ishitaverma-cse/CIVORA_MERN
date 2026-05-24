@@ -4,7 +4,7 @@ import { allCategory } from "../../../../services/CategoryService";
 import { addEmployee, allEmployee, singleEmployee, updateEmployee, deleteEmployee } from "../../../../services/EmployeeService";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-
+import Loader from "../../../common/Loader";
 
 const customStyles = {
     content: {
@@ -39,6 +39,7 @@ export default function ManageEmployee() {
     const [formType, setFormType] = useState("");
     const [employees, setEmployees] = useState([]);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -142,6 +143,9 @@ export default function ManageEmployee() {
 
         } catch (err) {
             console.log(err);
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -343,68 +347,96 @@ export default function ManageEmployee() {
                                 </thead>
 
                                 <tbody>
+
                                     {
-                                        employees.length > 0 ?
-                                            currentEmployees.map((item, index) => (
-                                                <tr key={item._id || index}>
+                                        loading ?
 
-                                                    <td className="fw-semibold">
-                                                        {indexOfFirstItem + index + 1}
-                                                    </td>
+                                            [...Array(6)].map((_, index) => (
 
-                                                    <td className="fw-semibold">
-                                                        {item.name}
-                                                    </td>
-
-                                                    <td>{item.email}</td>
-                                                    <td>{item.phone}</td>
-                                                    <td>{item.designation}</td>
+                                                <tr key={index}>
 
                                                     <td>
-                                                        <span
-                                                            className="badge rounded-pill px-3 py-2"
-                                                            style={{
-                                                                background: "#edf3ff",
-                                                                color: "#3559b7"
-                                                            }}
-                                                        >
-                                                            {item?.categoryId?.name}
-                                                        </span>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "20px", height: "20px" }}
+                                                        ></div>
                                                     </td>
 
-                                                    <td className="fw-semibold">
-                                                        ₹ {item.salary}
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "120px", height: "20px" }}
+                                                        ></div>
                                                     </td>
 
-                                                    <td>{item.address}</td>
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "180px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
 
-                                                    {/* ACTIONS */}
-                                                    <td className="text-center">
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "120px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
 
-                                                        <button
-                                                            className="btn btn-sm rounded-pill px-3 me-2"
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "100px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
                                                             style={{
-                                                                background: "#edf3ff",
-                                                                color: "#3559b7",
-                                                                fontWeight: "500"
+                                                                width: "90px",
+                                                                height: "30px",
+                                                                borderRadius: "20px"
                                                             }}
-                                                            onClick={() => openModal("Edit", item._id)}
-                                                        >
-                                                            Edit
-                                                        </button>
+                                                        ></div>
+                                                    </td>
 
-                                                        <button
-                                                            className="btn btn-sm rounded-pill px-3"
-                                                            style={{
-                                                                background: "#ffe7e7",
-                                                                color: "#d64545",
-                                                                fontWeight: "500"
-                                                            }}
-                                                            onClick={() => deleteEmployeeHandler(item._id)}
-                                                        >
-                                                            Delete
-                                                        </button>
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "80px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
 
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "150px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div className="d-flex justify-content-center gap-2">
+
+                                                            <div
+                                                                className="skeleton"
+                                                                style={{
+                                                                    width: "70px",
+                                                                    height: "35px",
+                                                                    borderRadius: "20px"
+                                                                }}
+                                                            ></div>
+
+                                                            <div
+                                                                className="skeleton"
+                                                                style={{
+                                                                    width: "80px",
+                                                                    height: "35px",
+                                                                    borderRadius: "20px"
+                                                                }}
+                                                            ></div>
+
+                                                        </div>
                                                     </td>
 
                                                 </tr>
@@ -412,11 +444,80 @@ export default function ManageEmployee() {
 
                                             :
 
-                                            <tr>
-                                                <td colSpan="9" className="text-center text-muted py-4">
-                                                    No employees found
-                                                </td>
-                                            </tr>
+                                            employees.length > 0 ?
+
+                                                currentEmployees.map((item, index) => (
+                                                    <tr key={item._id || index}>
+
+                                                        <td className="fw-semibold">
+                                                            {indexOfFirstItem + index + 1}
+                                                        </td>
+
+                                                        <td className="fw-semibold">
+                                                            {item.name}
+                                                        </td>
+
+                                                        <td>{item.email}</td>
+                                                        <td>{item.phone}</td>
+                                                        <td>{item.designation}</td>
+
+                                                        <td>
+                                                            <span
+                                                                className="badge rounded-pill px-3 py-2"
+                                                                style={{
+                                                                    background: "#edf3ff",
+                                                                    color: "#3559b7"
+                                                                }}
+                                                            >
+                                                                {item?.categoryId?.name}
+                                                            </span>
+                                                        </td>
+
+                                                        <td className="fw-semibold">
+                                                            ₹ {item.salary}
+                                                        </td>
+
+                                                        <td>{item.address}</td>
+
+                                                        {/* ACTIONS */}
+                                                        <td className="text-center">
+
+                                                            <button
+                                                                className="btn btn-sm rounded-pill px-3 me-2"
+                                                                style={{
+                                                                    background: "#edf3ff",
+                                                                    color: "#3559b7",
+                                                                    fontWeight: "500"
+                                                                }}
+                                                                onClick={() => openModal("Edit", item._id)}
+                                                            >
+                                                                Edit
+                                                            </button>
+
+                                                            <button
+                                                                className="btn btn-sm rounded-pill px-3"
+                                                                style={{
+                                                                    background: "#ffe7e7",
+                                                                    color: "#d64545",
+                                                                    fontWeight: "500"
+                                                                }}
+                                                                onClick={() => deleteEmployeeHandler(item._id)}
+                                                            >
+                                                                 <i className="bi bi-trash"></i>
+                                                            </button>
+
+                                                        </td>
+
+                                                    </tr>
+                                                ))
+
+                                                :
+
+                                                <tr>
+                                                    <td colSpan="9" className="text-center text-muted py-4">
+                                                        No employees found
+                                                    </td>
+                                                </tr>
                                     }
 
                                 </tbody>

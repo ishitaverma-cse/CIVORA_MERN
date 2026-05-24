@@ -1,17 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReportIssues from "./ReportIssue";
 import MyIssues from "./MyIssues";
 import PublicIssues from "./PublicIssues";
 
 export default function IssuesPage() {
-
   const userId = localStorage.getItem("userId");
   const isLoggedIn = !!userId;
+
   const [activeTab, setActiveTab] = useState(
     isLoggedIn ? "my" : "public"
   );
-
-
+  
   return (
     <>
       <style>{`

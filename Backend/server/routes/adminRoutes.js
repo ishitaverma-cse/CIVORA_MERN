@@ -1,6 +1,8 @@
 const express = require('express');            //import express.
 const router = express.Router()                //create router ~ used to handle all api's.
 
+
+
 // import
 const userController = require('../apis/user/userController');
 const employeeController = require('../apis/employee/employeeController')
@@ -10,9 +12,7 @@ const assignmentController = require('../apis/assignment/assignmentController')
 const upvoteController = require('../apis/upvote/upvoteController')
 const notificationController = require('../apis/notification/notificationController')
 const dashboardController  = require("../apis/dashboard/dashboardController");
-
-
-
+const chatbotController = require('../apis/chatBot/chatbotController');
 
 
 //create route 
@@ -22,6 +22,10 @@ router.post('/sendOtp', userController.sendOtp);
 router.post('/resetPassword', userController.resetPassword);
 router.post('/allCitizens', userController.allCitizens);
 router.post('/blockUser', userController.blockUser);
+
+router.post('/chat', chatbotController.chatbot);
+
+
 
 router.use(require('../middleware/tokenChecker'));
 

@@ -1,9 +1,10 @@
 import Modal from "react-modal";
 import { useEffect, useState } from "react";
 import ReportIssue from "./ReportIssue";
-import { myIssues } from "../../../../services/IssueService";
+import { myIssues, deleteIssue } from "../../../../services/IssueService";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+
 
 const customStyles = {
     content: {
@@ -23,17 +24,19 @@ const customStyles = {
 };
 
 export default function MyIssues() {
-
     const [issues, setIssues] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [visibleCount, setVisibleCount] = useState(3);
 
     const userId = localStorage.getItem("userId");
+    const [loading, setLoading] = useState(true);
+    const [editData, setEditData] = useState(null);
 
     // FETCH API
     async function fetchMyIssues() {
         try {
             setLoading(true);
+
             console.log("User ID:", userId);
             const res = await myIssues({
                 reportedBy: userId
@@ -48,7 +51,8 @@ export default function MyIssues() {
         } catch (err) {
             console.log(err);
             toast.error("Failed to load issues");
-        } finally {
+        }
+        finally {
             setLoading(false);
         }
     }
@@ -60,13 +64,15 @@ export default function MyIssues() {
     }, []);
 
     //OPEN / CLOSE
-    function openModal() {
+    function openModal(issue = null) {
+        setEditData(issue);
         setIsOpen(true);
     }
 
     function closeModal() {
         setIsOpen(false);
-        fetchMyIssues();  //refresh after submit
+        setEditData(null);
+        fetchMyIssues();
     }
 
     //STATUS 
@@ -96,19 +102,48 @@ export default function MyIssues() {
                 text: "🚫 You are blocked by admin."
             });
 
-            // OPTIONAL: still allow retry via backend
-            // openModal(); 
             return;
         }
         openModal();
     };
 
+    //HANDLE DELETE
+    const handleDelete = async (id) => {
+
+        const confirm = await Swal.fire({
+            title: "Delete Issue?",
+            text: "This action cannot be undone.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            confirmButtonText: "Delete"
+        });
+
+        if (!confirm.isConfirmed) return;
+
+        try {
+            const res = await deleteIssue({
+                _id: id
+            });
+
+            if (res.data.success) {
+                toast.success(res.data.message);
+                fetchMyIssues();
+            } else {
+                toast.error(res.data.message);
+            }
+        } catch (err) {
+            toast.error("Delete failed");
+        }
+    };
+
     return (
         <>
             <div className="container mt-4">
+
                 {/* HEADER CARD */}
                 <div
-                    className="card border-0 shadow-sm rounded-5 p-4 mb-4"
+                    className="card border-0 shadow-sm rounded-5 p-4 mb-4 "
                     style={{ background: "#ffffff" }}
                 >
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
@@ -142,15 +177,118 @@ export default function MyIssues() {
                 </div>
 
                 {loading ? (
-                    <div className="text-center py-5">
-                        <h5>Loading issues...</h5>
+
+                    // ================= SKELETON LOADER =================
+                    <div className="position-relative">
+
+                        {/* SKELETON ROW */}
+                        <div className="row">
+
+                            {[...Array(3)].map((_, index) => (
+                                <div className="col-md-4 p-3" key={index}>
+
+                                    <div className="issue-card h-100">
+
+                                        {/* IMAGE */}
+                                        <div
+                                            style={{
+                                                height: "160px",
+                                                width: "100%",
+                                                borderRadius: "10px",
+                                                background: "#e0e0e0"
+                                            }}
+                                        />
+
+                                        {/* CONTENT */}
+                                        <div className="p-3">
+
+                                            {/* TITLE */}
+                                            <div
+                                                style={{
+                                                    height: "18px",
+                                                    width: "80%",
+                                                    background: "#e0e0e0",
+                                                    borderRadius: "6px",
+                                                    marginBottom: "10px"
+                                                }}
+                                            />
+
+                                            {/* DESCRIPTION */}
+                                            <div
+                                                style={{
+                                                    height: "14px",
+                                                    width: "100%",
+                                                    background: "#e0e0e0",
+                                                    borderRadius: "6px",
+                                                    marginBottom: "8px"
+                                                }}
+                                            />
+                                            <div
+                                                style={{
+                                                    height: "14px",
+                                                    width: "70%",
+                                                    background: "#e0e0e0",
+                                                    borderRadius: "6px",
+                                                    marginBottom: "12px"
+                                                }}
+                                            />
+
+                                            {/* BADGES */}
+                                            <div className="d-flex gap-2 mb-3">
+                                                <div
+                                                    style={{
+                                                        height: "22px",
+                                                        width: "80px",
+                                                        background: "#e0e0e0",
+                                                        borderRadius: "20px"
+                                                    }}
+                                                />
+
+                                                <div
+                                                    style={{
+                                                        height: "22px",
+                                                        width: "100px",
+                                                        background: "#e0e0e0",
+                                                        borderRadius: "20px"
+                                                    }}
+                                                />
+                                            </div>
+
+                                            {/* FOOTER */}
+                                            <div
+                                                style={{
+                                                    height: "12px",
+                                                    width: "60%",
+                                                    background: "#e0e0e0",
+                                                    borderRadius: "6px",
+                                                    marginBottom: "6px"
+                                                }}
+                                            />
+                                            <div
+                                                style={{
+                                                    height: "12px",
+                                                    width: "80%",
+                                                    background: "#e0e0e0",
+                                                    borderRadius: "6px"
+                                                }}
+                                            />
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            ))}
+
+                        </div>
+
                     </div>
+
                 ) : issues.length === 0 ? (
 
-                    //  EMPTY STATE
+                    // ================= EMPTY STATE =================
                     <div className="text-center py-5">
                         <div style={{ fontSize: "70px" }}>📭</div>
-                        <h4 className="mt-3">NO ISSUES YET  </h4>
+                        <h4 className="mt-3">NO ISSUES YET</h4>
                         <p className="text-muted">
                             You haven’t reported any issues. Start by reporting one.
                         </p>
@@ -158,75 +296,101 @@ export default function MyIssues() {
 
                 ) : (
 
-                    // ISSUES LIST
-                    <div className="row">
+                    // ================= REAL DATA =================
+                    <>
+                        <div className="position-relative">
+                            {/* ISSUES ROW */}
+                            <div className="row">
+                                {issues
+                                    .slice(0, visibleCount)
+                                    .map((issue) => (
+                                        <div className="col-md-4 p-3" key={issue._id}>
 
-                        {issues.map((issue) => (
+                                            <div className="issue-card h-100">
 
-                            <div className="col-md-4 p-4 mb-3" key={issue._id}>
-                                <div className="issue-card h-100">
+                                                {/* IMAGE */}
+                                                {issue.media && issue.media.length > 0 && (
+                                                    <div className="issue-image">
+                                                        <img
+                                                            src={`${issue.media[0]}`}
+                                                            alt="issue"
+                                                        />
+                                                    </div>
+                                                )}
 
-                                    {/* IMAGE */}
-                                    {issue.media && (
-                                        <div className="issue-image">
-                                            <img
-                                                src={`http://localhost:3000/${issue.media}`}
-                                                alt="issue"
-                                            />
+                                                {/* CONTENT */}
+                                                <div className="issue-content d-flex flex-column h-100">
+
+                                                    <h5 className="fw-semibold mb-2">
+                                                        {issue.title}
+                                                    </h5>
+
+                                                    <p className="ellipsis text-muted small" title={issue.description}>
+                                                        {issue.description}
+                                                    </p>
+
+                                                    <div className="mb-2">
+                                                        {getStatusBadge(issue.status)}
+
+                                                        <span className="badge bg-info text-dark ms-2">
+                                                            {issue.categoryId?.name || "No Category"}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="small text-muted pt-1">
+                                                        📍 {issue.location}
+                                                    </div>
+
+                                                    <span className="small text-muted pt-2">
+                                                        📅 {new Date(issue.createdAt).toLocaleString("en-IN", {
+                                                            day: "numeric",
+                                                            month: "short",
+                                                            year: "numeric",
+                                                            hour: "2-digit",
+                                                            minute: "2-digit"
+                                                        })}
+                                                    </span>
+
+                                                    <div className="d-flex gap-2 mt-3">
+
+                                                        <button
+                                                            className="btn btn-sm btn-outline-primary rounded-pill"
+                                                            onClick={() => openModal(issue)}
+                                                        >
+                                                            ✏️ Update
+                                                        </button>
+
+                                                        <button
+                                                            className="btn btn-sm btn-outline-danger rounded-pill"
+                                                            onClick={() => handleDelete(issue._id)}
+                                                        >
+                                                            🗑 Delete
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
                                         </div>
-                                    )}
-
-                                    {/* CONTENT */}
-                                    <div className="issue-content d-flex flex-column h-100">
-
-                                        <h5 className="fw-semibold mb-2">
-                                            {issue.title}
-                                        </h5>
-
-                                        <p
-                                            className="ellipsis text-muted small"
-                                            title={issue.description}
-                                        >
-                                            {issue.description}
-                                        </p>
-
-                                        <div className="mb-2">
-
-                                            <span className="badge fs-6 text-dark me-1">
-                                                {getStatusBadge(issue.status)}
-                                            </span>
-
-                                            <span className="badge bg-info text-dark">
-                                                {issue.categoryId?.name || "No Category"}
-                                            </span>
-
-                                        </div>
-
-                                        <div className="small text-muted d-flex flex-wrap gap-2 mt-auto">
-
-                                            <span>📍 {issue.location}</span>
-
-                                            <span>
-                                                📅 {new Date(issue.createdAt).toLocaleString("en-IN", {
-                                                    day: "numeric",
-                                                    month: "short",
-                                                    year: "numeric",
-                                                    hour: "2-digit",
-                                                    minute: "2-digit"
-                                                })}
-                                            </span>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
+                                    ))}
                             </div>
 
-                        ))}
+                            {/* LOAD MORE */}
+                            {visibleCount < issues.length && (
+                                <div className="text-center mt-4 pt-2 pb-5">
+                                    <button
+                                        className="btn btn-outline-success px-4 py-2 rounded-3"
+                                        onClick={() => setVisibleCount(prev => prev + 3)}
+                                    >
+                                        Load More Issues
+                                    </button>
+                                </div>
+                            )}
 
-                    </div>
+                        </div>
+                    </>
                 )}
             </div>
 
@@ -235,7 +399,9 @@ export default function MyIssues() {
                 onRequestClose={closeModal}
                 style={customStyles}
             >
-                <ReportIssue closeModal={closeModal} />
+                <ReportIssue closeModal={closeModal}
+                    editData={editData}
+                />
 
             </Modal>
         </>

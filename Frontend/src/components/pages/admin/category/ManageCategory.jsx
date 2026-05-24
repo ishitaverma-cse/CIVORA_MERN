@@ -4,6 +4,7 @@ import { addCategory, allCategory, singleCategory, updateCategory, deleteCategor
 import { toast } from "react-toastify";
 import Switch from "react-switch";
 import Swal from "sweetalert2";
+import Loader from "../../../common/Loader";
 
 const customStyles = {
     content: {
@@ -31,6 +32,7 @@ export default function ManageCategory() {
     const [selectedId, setSelectedId] = useState(null);
     const [categories, setCategories] = useState([]);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -71,6 +73,7 @@ export default function ManageCategory() {
         }
     };
 
+    //HANDLE SUBMIT
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -116,6 +119,9 @@ export default function ManageCategory() {
 
         } catch (err) {
             console.log("fetchCategories error:", err);
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -272,69 +278,81 @@ export default function ManageCategory() {
                                 <tbody>
 
                                     {
-                                        currentCategories.length > 0 ?
+                                        loading ?
 
-                                            currentCategories.map((item, index) => (
-                                                <tr key={item._id || index}>
+                                            [...Array(6)].map((_, index) => (
 
-                                                    <td className="fw-semibold">
-                                                        {indexOfFirstItem + index + 1}
+                                                <tr key={index}>
+
+                                                    {/* INDEX */}
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{
+                                                                width: "20px",
+                                                                height: "20px"
+                                                            }}
+                                                        ></div>
                                                     </td>
 
-                                                    <td className="fw-semibold">
-                                                        {item.name}
+                                                    {/* NAME */}
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{
+                                                                width: "140px",
+                                                                height: "20px"
+                                                            }}
+                                                        ></div>
                                                     </td>
 
-                                                    <td className="ellipsis text-muted" title={item.description}>
-                                                        {item.description}
+                                                    {/* DESCRIPTION */}
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{
+                                                                width: "250px",
+                                                                height: "20px"
+                                                            }}
+                                                        ></div>
                                                     </td>
 
                                                     {/* STATUS */}
-                                                    <td className="text-center">
-                                                        <Switch
-                                                            checked={
-                                                                item.status === true ||
-                                                                item.status === "true"
-                                                            }
-                                                            onChange={() =>
-                                                                toggleStatus(item._id, item.status)
-                                                            }
-                                                            onColor="#198754"
-                                                            offColor="#6c757d"
-                                                            height={20}
-                                                            width={40}
-                                                        />
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{
+                                                                width: "45px",
+                                                                height: "22px",
+                                                                borderRadius: "20px"
+                                                            }}
+                                                        ></div>
                                                     </td>
 
                                                     {/* ACTIONS */}
-                                                    <td className="text-center">
+                                                    <td>
 
-                                                        <button
-                                                            className="btn btn-sm rounded-pill px-3 me-2"
-                                                            style={{
-                                                                background: "#edf3ff",
-                                                                color: "#3559b7",
-                                                                fontWeight: "500"
-                                                            }}
-                                                            onClick={() => {
-                                                                setFormType("Edit");
-                                                                openModal("Edit", item._id);
-                                                            }}
-                                                        >
-                                                            Edit
-                                                        </button>
+                                                        <div className="d-flex justify-content-center gap-2">
 
-                                                        <button
-                                                            className="btn btn-sm rounded-pill px-3"
-                                                            style={{
-                                                                background: "#ffe7e7",
-                                                                color: "#d64545",
-                                                                fontWeight: "500"
-                                                            }}
-                                                            onClick={() => deleteCat(item._id)}
-                                                        >
-                                                            Delete
-                                                        </button>
+                                                            <div
+                                                                className="skeleton"
+                                                                style={{
+                                                                    width: "70px",
+                                                                    height: "35px",
+                                                                    borderRadius: "20px"
+                                                                }}
+                                                            ></div>
+
+                                                            <div
+                                                                className="skeleton"
+                                                                style={{
+                                                                    width: "80px",
+                                                                    height: "35px",
+                                                                    borderRadius: "20px"
+                                                                }}
+                                                            ></div>
+
+                                                        </div>
 
                                                     </td>
 
@@ -343,11 +361,82 @@ export default function ManageCategory() {
 
                                             :
 
-                                            <tr>
-                                                <td colSpan="5" className="text-center text-muted py-4">
-                                                    No categories found
-                                                </td>
-                                            </tr>
+                                            currentCategories.length > 0 ?
+
+                                                currentCategories.map((item, index) => (
+                                                    <tr key={item._id || index}>
+
+                                                        <td className="fw-semibold">
+                                                            {indexOfFirstItem + index + 1}
+                                                        </td>
+
+                                                        <td className="fw-semibold">
+                                                            {item.name}
+                                                        </td>
+
+                                                        <td className="ellipsis text-muted" title={item.description}>
+                                                            {item.description}
+                                                        </td>
+
+                                                        {/* STATUS */}
+                                                        <td className="text-center">
+                                                            <Switch
+                                                                checked={
+                                                                    item.status === true ||
+                                                                    item.status === "true"
+                                                                }
+                                                                onChange={() =>
+                                                                    toggleStatus(item._id, item.status)
+                                                                }
+                                                                onColor="#198754"
+                                                                offColor="#6c757d"
+                                                                height={20}
+                                                                width={40}
+                                                            />
+                                                        </td>
+
+                                                        {/* ACTIONS */}
+                                                        <td className="text-center">
+
+                                                            <button
+                                                                className="btn btn-sm rounded-pill px-3 me-2"
+                                                                style={{
+                                                                    background: "#edf3ff",
+                                                                    color: "#3559b7",
+                                                                    fontWeight: "500"
+                                                                }}
+                                                                onClick={() => {
+                                                                    setFormType("Edit");
+                                                                    openModal("Edit", item._id);
+                                                                }}
+                                                            >
+                                                                Edit
+                                                            </button>
+
+                                                            <button
+                                                                className="btn btn-sm rounded-pill px-3"
+                                                                style={{
+                                                                    background: "#ffe7e7",
+                                                                    color: "#d64545",
+                                                                    fontWeight: "500"
+                                                                }}
+                                                                onClick={() => deleteCat(item._id)}
+                                                            >
+                                                                 <i className="bi bi-trash"></i>
+                                                            </button>
+
+                                                        </td>
+
+                                                    </tr>
+                                                ))
+
+                                                :
+
+                                                <tr>
+                                                    <td colSpan="5" className="text-center text-muted py-4">
+                                                        No categories found
+                                                    </td>
+                                                </tr>
                                     }
 
                                 </tbody>

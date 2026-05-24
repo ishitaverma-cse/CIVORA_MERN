@@ -1,26 +1,27 @@
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const cloudinary = require('cloudinary').v2;
 
-// ensure folder exists
-const uploadPath = "server/uploads/";
-
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    const uniqueName =
-      Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
-
-    cb(null, uniqueName);
-  }
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.CLOUD_API_KEY, 
+  api_secret: process.env.CLOUD_API_SECRET
 });
 
-const upload = multer({ storage });
+const upload = async(filebuffer, publicId) => {
+    return new Promise((resolve, reject)=>{
+        cloudinary.uploader.upload_stream(
+            {
+                public_id: publicId,
+                resource_type: "auto"
+            }
+            , 
+            (error, result) => {
+            if(error){
+                reject(error)
+            }else{
+                resolve(result.secure_url)
+            }
+        }).end(filebuffer)
+    })
+}
 
-module.exports = upload;
+module.exports = {upload}

@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { addIssue } from "../../../../services/IssueService";
+import { addIssue, updateIssue } from "../../../../services/IssueService";
 import { allCategory } from "../../../../services/CategoryService";
 
-export default function ReportIssue({ closeModal }) {
 
+export default function ReportIssue({
+  closeModal,
+  editData
+}) {
   const [categories, setCategories] = useState([]);
   // const [categoryId, setCategoryId] = useState("");
   const [formData, setFormData] = useState({
@@ -16,6 +19,7 @@ export default function ReportIssue({ closeModal }) {
   });
 
 
+  //HANDLE CHANGE
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
@@ -26,6 +30,7 @@ export default function ReportIssue({ closeModal }) {
     }
   };
 
+  //HANDLE SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -52,9 +57,14 @@ export default function ReportIssue({ closeModal }) {
     if (formData.media) {
       formDataToSend.append("media", formData.media);
     }
-
     try {
-      const res = await addIssue(formDataToSend);
+      if (editData && editData._id) {
+        formDataToSend.append("_id", editData._id);
+      }
+
+      const res = editData && editData._id
+  ? await updateIssue(formDataToSend)
+  : await addIssue(formDataToSend);
 
       if (res.data.success) {
         toast.success("Issue reported successfully!");
@@ -79,10 +89,6 @@ export default function ReportIssue({ closeModal }) {
   };
 
   //Fetch Categories
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   async function fetchCategories() {
     try {
       const res = await allCategory();
@@ -93,12 +99,29 @@ export default function ReportIssue({ closeModal }) {
       console.log(err);
     }
   }
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (editData) {
+
+      setFormData({
+        title: editData.title || "",
+        description: editData.description || "",
+        categoryId: editData.categoryId?._id || "",
+        location: editData.location || "",
+        media: null
+      });
+
+    }
+  }, [editData]);
 
   return (
     <>
       <section className="section">
         <div className="container section-title p-0">
-          <h2>Report Issue</h2>
+          <h2>{editData ? "Update Issue" : "Report Issue"}</h2>
         </div>
 
         <div className="container d-flex justify-content-center">
@@ -173,13 +196,24 @@ export default function ReportIssue({ closeModal }) {
                 <div className="col-12">
                   <label className="form-label">Upload Image / Video</label>
                   <input
-                    required
+                    required={!editData}
                     type="file"
                     className="form-control"
                     name="media"
                     accept="image/*,video/*"
                     onChange={handleChange}
                   />
+
+                  {editData?.media && !formData.media && (
+                    <div className="mt-3">
+                      <img
+                        src={editData.media}
+                        alt="old"
+                        className="img-fluid rounded"
+                        style={{ maxHeight: "200px" }}
+                      />
+                    </div>
+                  )}
 
                   {/* Preview */}
                   {formData.media && (

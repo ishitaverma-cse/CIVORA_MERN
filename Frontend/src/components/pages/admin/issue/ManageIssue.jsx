@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { admin_allIssue, admin_singleIssue, admin_deleteIssue } from "../../../../services/IssueService";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import Loader from "../../../common/Loader";
 
 const customStyles = {
     content: {
@@ -22,7 +23,6 @@ const customStyles = {
 };
 
 export default function ManageIssue() {
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [formType, setFormType] = useState("");
@@ -36,6 +36,7 @@ export default function ManageIssue() {
     const [issues, setIssues] = useState([]);
     const [modalIsOpen, setIsOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -93,6 +94,9 @@ export default function ManageIssue() {
 
         } catch (err) {
             console.log("Fetch issues error:", err);
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -180,7 +184,11 @@ export default function ManageIssue() {
 
     const totalPages = Math.ceil(issues.length / itemsPerPage);
 
+    // if (loading) {
+    //     return <RotateLoader/>;
+    // }
 
+    
     return (
         <>
             <section
@@ -256,92 +264,92 @@ export default function ManageIssue() {
                                 <tbody>
 
                                     {
-                                        currentIssues.length > 0 ?
+                                        loading ?
 
-                                            currentIssues.map((item, index) => (
-                                                <tr key={item._id || index}>
+                                            [...Array(6)].map((_, index) => (
 
-                                                    {/* INDEX */}
-                                                    <td className="fw-semibold">
-                                                        {indexOfFirstItem + index + 1}
-                                                    </td>
+                                                <tr key={index}>
 
-                                                    {/* MEDIA */}
                                                     <td>
-                                                        {item.media?.length ? (
-                                                            <img
-                                                                src={`http://localhost:3000/${item.media[0]}`}
-                                                                alt="issue"
-                                                                className="img-thumbnail"
-                                                                style={{
-                                                                    width: "60px",
-                                                                    height: "60px",
-                                                                    objectFit: "cover",
-                                                                    borderRadius: "10px",
-                                                                    cursor: "pointer"
-                                                                }}
-                                                                onClick={() =>
-                                                                    setSelectedImage(
-                                                                        `http://localhost:3000/${item.media[0]}`
-                                                                    )
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            <span className="text-muted">No Image</span>
-                                                        )}
-                                                    </td>
-
-                                                    {/* TITLE */}
-                                                    <td className="fw-semibold">
-                                                        {item.title}
-                                                    </td>
-
-                                                    {/* DESCRIPTION */}
-                                                    <td className="ellipsis text-muted" title={item.description}>
-                                                        {item.description}
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "20px", height: "20px" }}
+                                                        ></div>
                                                     </td>
 
                                                     <td>
-                                                        {item.categoryId?.name || "N/A"}
-                                                    </td>
-
-                                                    <td>
-                                                        {item.location || "N/A"}
-                                                    </td>
-
-                                                    <td>
-                                                        {item.reportedBy?.name || "N/A"}
-                                                    </td>
-
-                                                    {/* STATUS */}
-                                                    <td>
-                                                        <div className="d-flex justify-content-center">
-                                                            {getStatusBadge(item.status)}
-                                                        </div>
-                                                    </td>
-
-                                                    {/* AI SEVERITY */}
-                                                    <td className="fw-semibold">
-                                                        {item.aiSeverity || "N/A"}
-                                                    </td>
-
-                                                    {/* ACTION */}
-                                                    <td>
-
-                                                        <button
-                                                            className="btn btn-sm rounded-pill px-3"
+                                                        <div
+                                                            className="skeleton mx-auto"
                                                             style={{
-                                                                background: "#ffe7e7",
-                                                                color: "#d64545",
-                                                                fontWeight: "500"
+                                                                width: "60px",
+                                                                height: "60px",
+                                                                borderRadius: "10px"
                                                             }}
-                                                            onClick={() =>
-                                                                deleteIssueHandler(item._id)
-                                                            }
-                                                        >
-                                                            Delete
-                                                        </button>
+                                                        ></div>
+                                                    </td>
 
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "120px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "180px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "90px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "120px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "100px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{
+                                                                width: "80px",
+                                                                height: "30px",
+                                                                borderRadius: "20px"
+                                                            }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "60px", height: "20px" }}
+                                                        ></div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{
+                                                                width: "80px",
+                                                                height: "35px",
+                                                                borderRadius: "20px"
+                                                            }}
+                                                        ></div>
                                                     </td>
 
                                                 </tr>
@@ -349,11 +357,104 @@ export default function ManageIssue() {
 
                                             :
 
-                                            <tr>
-                                                <td colSpan="10" className="text-center text-muted py-4">
-                                                    No issues found
-                                                </td>
-                                            </tr>
+                                            currentIssues.length > 0 ?
+
+                                                currentIssues.map((item, index) => (
+                                                    <tr key={item._id || index}>
+
+                                                        {/* INDEX */}
+                                                        <td className="fw-semibold">
+                                                            {indexOfFirstItem + index + 1}
+                                                        </td>
+
+                                                        {/* MEDIA */}
+                                                        <td>
+                                                            {item.media?.length ? (
+                                                                <img
+                                                                    src={`${item.media[0]}`}
+                                                                    alt="issue"
+                                                                    className="img-thumbnail"
+                                                                    style={{
+                                                                        width: "60px",
+                                                                        height: "60px",
+                                                                        objectFit: "cover",
+                                                                        borderRadius: "10px",
+                                                                        cursor: "pointer"
+                                                                    }}
+                                                                    onClick={() =>
+                                                                        setSelectedImage(
+                                                                            `${item.media[0]}`
+                                                                        )
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                <span className="text-muted">No Image</span>
+                                                            )}
+                                                        </td>
+
+                                                        {/* TITLE */}
+                                                        <td className="fw-semibold">
+                                                            {item.title}
+                                                        </td>
+
+                                                        {/* DESCRIPTION */}
+                                                        <td className="ellipsis text-muted" title={item.description}>
+                                                            {item.description}
+                                                        </td>
+
+                                                        <td>
+                                                            {item.categoryId?.name || "N/A"}
+                                                        </td>
+
+                                                        <td>
+                                                            {item.location || "N/A"}
+                                                        </td>
+
+                                                        <td>
+                                                            {item.reportedBy?.name || "N/A"}
+                                                        </td>
+
+                                                        {/* STATUS */}
+                                                        <td>
+                                                            <div className="d-flex justify-content-center">
+                                                                {getStatusBadge(item.status)}
+                                                            </div>
+                                                        </td>
+
+                                                        {/* AI SEVERITY */}
+                                                        <td className="fw-semibold">
+                                                            {item.aiSeverity || "N/A"}
+                                                        </td>
+
+                                                        {/* ACTION */}
+                                                        <td>
+
+                                                            <button
+                                                                className="btn btn-sm rounded-pill px-4 py-1"
+                                                                style={{
+                                                                    background: "#ffe7e7",
+                                                                    color: "#d64545",
+                                                                    fontWeight: "500"
+                                                                }}
+                                                                onClick={() =>
+                                                                    deleteIssueHandler(item._id)
+                                                                }
+                                                            >
+                                                                 <i className="bi bi-trash"></i>
+                                                            </button>
+
+                                                        </td>
+
+                                                    </tr>
+                                                ))
+
+                                                :
+
+                                                <tr>
+                                                    <td colSpan="10" className="text-center text-muted py-4">
+                                                        No issues found
+                                                    </td>
+                                                </tr>
                                     }
 
                                 </tbody>
@@ -410,7 +511,7 @@ export default function ManageIssue() {
 
                 </div>
 
-                {/* IMAGE PREVIEW (UNCHANGED) */}
+                {/* IMAGE PREVIEW */}
                 {selectedImage && (
                     <div
                         className="modal fade show"

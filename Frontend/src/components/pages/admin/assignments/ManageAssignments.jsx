@@ -3,22 +3,19 @@ import { toast } from "react-toastify";
 import { admin_allIssue } from "../../../../services/IssueService";
 import { allEmployees } from "../../../../services/EmployeeService";
 import { addAssignment, allAssignment } from "../../../../services/AssignmentService";
+import Loader from "../../../common/Loader";
 
 export default function ManageAssignments() {
 
     const [issues, setIssues] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [selected, setSelected] = useState({});
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
     // FETCH DATA
-    useEffect(() => {
-        fetchData();
-    }, []);
-
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -43,6 +40,9 @@ export default function ManageAssignments() {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     // 🔹 FILTER EMPLOYEES BY CATEGORY
     const getFilteredEmployees = (categoryId) => {
@@ -152,28 +152,119 @@ export default function ManageAssignments() {
                     style={{ background: "#ffffff" }}
                 >
 
-                    {loading ? (
-                        <p className="text-center">Loading...</p>
-                    ) : (
 
-                        <div className="table-responsive">
 
-                            <table className="table align-middle text-center">
+                    <div className="table-responsive">
 
-                                <thead>
-                                    <tr style={{ color: "#29443a" }}>
-                                        <th>#</th>
-                                        <th>Issue</th>
-                                        <th>Category</th>
-                                        <th>Location</th>
-                                        <th>Assign To</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
+                        <table className="table align-middle text-center">
 
-                                <tbody>
+                            <thead>
+                                <tr style={{ color: "#29443a" }}>
+                                    <th>#</th>
+                                    <th>Issue</th>
+                                    <th>Category</th>
+                                    <th>Location</th>
+                                    <th>Assign To</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
 
-                                    {
+                            <tbody>
+
+                                {
+                                    loading ?
+
+                                        [...Array(6)].map((_, index) => (
+
+                                            <tr key={index}>
+
+                                                {/* INDEX */}
+                                                <td>
+                                                    <div
+                                                        className="skeleton mx-auto"
+                                                        style={{
+                                                            width: "20px",
+                                                            height: "20px"
+                                                        }}
+                                                    ></div>
+                                                </td>
+
+                                                {/* ISSUE */}
+                                                <td>
+                                                    <div
+                                                        className="skeleton mx-auto"
+                                                        style={{
+                                                            width: "140px",
+                                                            height: "20px"
+                                                        }}
+                                                    ></div>
+                                                </td>
+
+                                                {/* CATEGORY */}
+                                                <td>
+                                                    <div
+                                                        className="skeleton mx-auto"
+                                                        style={{
+                                                            width: "90px",
+                                                            height: "30px",
+                                                            borderRadius: "20px"
+                                                        }}
+                                                    ></div>
+                                                </td>
+
+                                                {/* LOCATION */}
+                                                <td>
+                                                    <div
+                                                        className="skeleton mx-auto"
+                                                        style={{
+                                                            width: "150px",
+                                                            height: "20px"
+                                                        }}
+                                                    ></div>
+                                                </td>
+
+                                                {/* ASSIGN */}
+                                                <td>
+                                                    <div className="d-flex justify-content-center gap-2">
+
+                                                        <div
+                                                            className="skeleton"
+                                                            style={{
+                                                                width: "160px",
+                                                                height: "35px",
+                                                                borderRadius: "8px"
+                                                            }}
+                                                        ></div>
+
+                                                        <div
+                                                            className="skeleton"
+                                                            style={{
+                                                                width: "80px",
+                                                                height: "35px",
+                                                                borderRadius: "20px"
+                                                            }}
+                                                        ></div>
+
+                                                    </div>
+                                                </td>
+
+                                                {/* STATUS */}
+                                                <td>
+                                                    <div
+                                                        className="skeleton mx-auto"
+                                                        style={{
+                                                            width: "90px",
+                                                            height: "30px",
+                                                            borderRadius: "20px"
+                                                        }}
+                                                    ></div>
+                                                </td>
+
+                                            </tr>
+                                        ))
+
+                                        :
+
                                         currentIssues.length > 0 ?
 
                                             currentIssues.map((issue, index) => (
@@ -191,7 +282,8 @@ export default function ManageAssignments() {
 
                                                     {/* CATEGORY */}
                                                     <td>
-                                                        <span className="badge rounded-pill px-3 py-2"
+                                                        <span
+                                                            className="badge rounded-pill px-3 py-2"
                                                             style={{
                                                                 background: "#edf3ff",
                                                                 color: "#3559b7"
@@ -222,7 +314,7 @@ export default function ManageAssignments() {
                                                                 <select
                                                                     className="form-select form-select-sm"
                                                                     style={{
-                                                                        width: "160px",   // 👈 reduced width
+                                                                        width: "160px",
                                                                         fontSize: "13px",
                                                                         padding: "4px 8px"
                                                                     }}
@@ -288,16 +380,17 @@ export default function ManageAssignments() {
                                                     No issues found
                                                 </td>
                                             </tr>
-                                    }
+                                }
 
-                                </tbody>
+                            </tbody>
 
-                            </table>
+                        </table>
 
-                        </div>
+                    </div>
 
-                    )}
+
                 </div>
+
                 {/* PAGINATION */}
                 {issues.length > itemsPerPage && (
                     <div className="d-flex justify-content-center mt-4 p-4">

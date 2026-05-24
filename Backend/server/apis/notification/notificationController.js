@@ -23,6 +23,7 @@ const add = async (req, res) => {
             autoId: await notificationModel.countDocuments({}) + 1,
             issueId: incomingData.issueId,
             userId: incomingData.userId,
+            reportedBy: incomingData.reportedBy,
             isAdmin: incomingData.isAdmin || false,
             type: incomingData.type,
             status: incomingData.status,
@@ -58,6 +59,7 @@ const all = async (req, res) => {
         const allData = await notificationModel
             .find({ isDelete: false })
             .populate("issueId")
+            .populate("reportedBy", "name")
             .sort({ createdAt: -1 });     // to retrive all the documents
 
         const total = await notificationModel.countDocuments({ isDelete: false });
@@ -215,6 +217,7 @@ const myNotifications = async (req, res) => {
                 isDelete: false
             })
             .populate("issueId")
+            .populate("reportedBy")
             .sort({ createdAt: -1 });
         res.json({
             success: true,
@@ -231,19 +234,25 @@ const myNotifications = async (req, res) => {
 
 //TO GET ADMIN NOTIFICATION
 const adminNotifications = async (req, res) => {
-    try {
 
+    try {
         const notifications = await notificationModel
             .find({
                 isAdmin: true,
                 isDelete: false
             })
-            .populate("reportedBy")
+            
             .populate({
                 path: "issueId",
-                populate: {
-                    path: "categoryId"
-                }
+                populate: [
+                    {
+                        path: "categoryId"
+                    },
+                    {
+                        path: "reportedBy",
+                        select: "name"
+                    }
+                ]
             })
             .sort({ createdAt: -1 });
 
@@ -259,7 +268,6 @@ const adminNotifications = async (req, res) => {
         });
     }
 };
-
 module.exports = {
     add,
     all,

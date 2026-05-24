@@ -1,4 +1,6 @@
-export const BASE_URL = 'https://civora-mern.onrender.com'
+// export const BASE_URL = 'https://civora-mern.onrender.com'
+export const BASE_URL = 'http://localhost:3000'
+// export const BASE_URL = 'http://192.168.29.65:3000'
 
 //user (auth)
 export const REGISTER = '/citizen/register'
@@ -12,7 +14,7 @@ export const BLOCKUSER = '/admin/blockUser'
 export const DASHBOARD = '/admin/dashboard'
 
 //HOME
-export const HOMESTATS = "/citizen/homee/stats";
+export const HOMESTATS = '/citizen/homee/stats'
 
 //Category
 export const ADDCATEGORY = '/admin/category/add'
@@ -71,5 +73,8 @@ export const DELETEASSIGNMENT = '/admin/assignment/softDelete'
 export const ADDCONTACT = '/citizen/contact/add'
 
 //Notification
+export const DELETENOTIFICATIONS = "/citizen/notification/softDelete";
 export const MYNOTIFICATIONS = '/citizen/notification/myNotifications'
-export const ADMIN_NOTIFICATIONS = '/admin/notification/admin'
+export const ADMINNOTIFICATIONS = '/admin/notification/admin'
+
+export const ADMIN_DELETENOTIFICATIONS = "/admin/notification/softDelete";

@@ -3,6 +3,7 @@ import Switch from "react-switch";
 import { allCitizen, blockUser } from "../../../../services/userService";
 import { toast } from "react-toastify";
 import Modal from "react-modal";
+import Loader from "../../../common/Loader";
 
 const customStyles = {
     content: {
@@ -25,6 +26,7 @@ export default function ManageUsers() {
     const [blockModalOpen, setBlockModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [reason, setReason] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -42,6 +44,9 @@ export default function ManageUsers() {
         } catch (err) {
             console.log(err);
             toast.error("Failed to load users");
+        }
+        finally {
+            setLoading(false);
         }
     };
 
@@ -214,56 +219,68 @@ export default function ManageUsers() {
                                 <tbody>
 
                                     {
-                                        currentUsers.length > 0 ?
+                                        loading ?
 
-                                            currentUsers.map((user, index) => (
-                                                <tr key={user._id || index}>
+                                            [...Array(6)].map((_, index) => (
+
+                                                <tr key={index}>
 
                                                     {/* INDEX */}
-                                                    <td className="fw-semibold">
-                                                        {indexOfFirstItem + index + 1}
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "20px", height: "20px" }}
+                                                        ></div>
                                                     </td>
 
                                                     {/* NAME */}
-                                                    <td className="fw-semibold">
-                                                        {user.name}
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "140px", height: "20px" }}
+                                                        ></div>
                                                     </td>
 
                                                     {/* EMAIL */}
                                                     <td>
-                                                        {user.email}
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "200px", height: "20px" }}
+                                                        ></div>
                                                     </td>
 
                                                     {/* COMPLAINTS */}
-                                                    <td className="fw-semibold text-primary">
-                                                        {user.complaintCount || 0}
+                                                    <td>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{ width: "40px", height: "20px" }}
+                                                        ></div>
                                                     </td>
 
                                                     {/* STATUS */}
                                                     <td>
-                                                        <span
-                                                            className={`badge rounded-pill px-3 py-2 ${user.isBlocked
-                                                                ? "bg-danger"
-                                                                : "bg-success"
-                                                                }`}
-                                                        >
-                                                            {user.isBlocked ? "Blocked" : "Active"}
-                                                        </span>
+                                                        <div
+                                                            className="skeleton mx-auto"
+                                                            style={{
+                                                                width: "80px",
+                                                                height: "25px",
+                                                                borderRadius: "20px"
+                                                            }}
+                                                        ></div>
                                                     </td>
 
                                                     {/* SWITCH */}
                                                     <td>
-                                                        <Switch
-                                                            checked={!user.isBlocked}
-                                                            onChange={() => handleToggle(user)}
-                                                            onColor="#86d3ff"
-                                                            onHandleColor="#2693e6"
-                                                            handleDiameter={22}
-                                                            uncheckedIcon={false}
-                                                            checkedIcon={false}
-                                                            height={18}
-                                                            width={42}
-                                                        />
+                                                        <div className="d-flex justify-content-center">
+                                                            <div
+                                                                className="skeleton"
+                                                                style={{
+                                                                    width: "45px",
+                                                                    height: "20px",
+                                                                    borderRadius: "20px"
+                                                                }}
+                                                            ></div>
+                                                        </div>
                                                     </td>
 
                                                 </tr>
@@ -271,11 +288,68 @@ export default function ManageUsers() {
 
                                             :
 
-                                            <tr>
-                                                <td colSpan="6" className="text-center text-muted py-4">
-                                                    No users found
-                                                </td>
-                                            </tr>
+                                            currentUsers.length > 0 ?
+
+                                                currentUsers.map((user, index) => (
+                                                    <tr key={user._id || index}>
+
+                                                        {/* INDEX */}
+                                                        <td className="fw-semibold">
+                                                            {indexOfFirstItem + index + 1}
+                                                        </td>
+
+                                                        {/* NAME */}
+                                                        <td className="fw-semibold">
+                                                            {user.name}
+                                                        </td>
+
+                                                        {/* EMAIL */}
+                                                        <td>
+                                                            {user.email}
+                                                        </td>
+
+                                                        {/* COMPLAINTS */}
+                                                        <td className="fw-semibold text-primary">
+                                                            {user.complaintCount || 0}
+                                                        </td>
+
+                                                        {/* STATUS */}
+                                                        <td>
+                                                            <span
+                                                                className={`badge rounded-pill px-3 py-2 ${user.isBlocked
+                                                                    ? "bg-danger"
+                                                                    : "bg-success"
+                                                                    }`}
+                                                            >
+                                                                {user.isBlocked ? "Blocked" : "Active"}
+                                                            </span>
+                                                        </td>
+
+                                                        {/* SWITCH */}
+                                                        <td>
+                                                            <Switch
+                                                                checked={!user.isBlocked}
+                                                                onChange={() => handleToggle(user)}
+                                                                onColor="#86d3ff"
+                                                                onHandleColor="#2693e6"
+                                                                handleDiameter={22}
+                                                                uncheckedIcon={false}
+                                                                checkedIcon={false}
+                                                                height={18}
+                                                                width={42}
+                                                            />
+                                                        </td>
+
+                                                    </tr>
+                                                ))
+
+                                                :
+
+                                                <tr>
+                                                    <td colSpan="6" className="text-center text-muted py-4">
+                                                        No users found
+                                                    </td>
+                                                </tr>
                                     }
 
                                 </tbody>
@@ -338,7 +412,7 @@ export default function ManageUsers() {
                 onRequestClose={closeBlockModal}
                 style={customStyles}
             >
-                
+
                 <form onSubmit={submitBlock}>
 
                     {/* USER INFO */}

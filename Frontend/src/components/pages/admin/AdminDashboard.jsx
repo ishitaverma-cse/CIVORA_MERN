@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { dashboard } from "../../../services/DashboardService";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import Loader from "../../common/Loader";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -46,6 +47,7 @@ export default function AdminDashboard() {
     const categories = stats?.categoryStats || [];
     const issues = latestIssues || [];
     const [showReportsModal, setShowReportsModal] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     //FETCH DASHBOARD -> API CALL
     const fetchDashboard = async () => {
@@ -70,6 +72,9 @@ export default function AdminDashboard() {
 
         } catch (err) {
             console.log(err);
+        }
+        finally {
+            setLoading(false);
         }
     };
     useEffect(() => {
@@ -175,22 +180,61 @@ export default function AdminDashboard() {
         doc.save("CIVORA_Report.pdf");
     };
 
-    const weeklyMap = {};
+    //COUNTS ISSUE PER DAY & BUILD DATASET
+    const dailyMap = {};
 
     issues.forEach((issue) => {
-
         const date = new Date(issue.createdAt)
-            .toLocaleDateString("en-IN", {
-                day: "numeric",
-                month: "short"
-            });
+            .toLocaleDateString("en-CA");   //YYYY-MM-DD
 
-        weeklyMap[date] = (weeklyMap[date] || 0) + 1;
+        dailyMap[date] = (dailyMap[date] || 0) + 1;
     });
 
-    const weeklyLabels = Object.keys(weeklyMap);
 
-    const weeklyCounts = Object.values(weeklyMap);
+
+    const getLast7Days = () => {
+        const days = [];
+
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+
+            const key = d.toISOString().split("T")[0];
+            days.push(key);
+        }
+
+        return days;
+    };
+
+    const last7Days = getLast7Days();
+
+    const activityMap = {};
+
+    // initialize all 7 days with 0
+    last7Days.forEach(date => {
+        activityMap[date] = 0;
+    });
+
+    // fill with backend data
+    issues.forEach(issue => {
+        const key = new Date(issue.createdAt)
+            .toISOString()
+            .split("T")[0];
+
+        if (activityMap[key] !== undefined) {
+            activityMap[key] += 1;
+        }
+    });
+
+    const dailyLabels = last7Days.map(date =>
+        new Date(date).toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short"
+        })
+    );
+
+    const dailyCounts = last7Days.map(date => activityMap[date]);
+
 
     return (
         <>
@@ -217,79 +261,132 @@ export default function AdminDashboard() {
                             {/* ================= LEFT PANEL ================= */}
                             <div className="col-lg-8">
 
-                                {/* LATEST ISSUES */}
+                                {/* TITLE */}
                                 <div className="section-title">
                                     <span className="description-title">Latest Complaints</span>
                                     <h2>Latest Complaints</h2>
                                 </div>
 
                                 <div className="row gy-3">
-                                    {latestIssues?.slice(0, 4).map((issue) => (
-                                        <div key={issue._id} className="col-md-6">
+                                    {loading ? (
 
-                                            <div className="area-highlight shadow-sm border rounded bg-white overflow-hidden">
+                                        // ================= SKELETON UI =================
+                                        [...Array(4)].map((_, index) => (
+                                            <div key={index} className="col-md-6">
 
-                                                {/* IMAGE */}
-                                                <div className="area-image-wrapper position-relative">
+                                                <div className="shadow-sm border rounded bg-white overflow-hidden">
 
-                                                    <img
-                                                        src={`http://localhost:3000/${issue.media[0]}`}
-                                                        alt={issue.title}
-                                                        className="img-fluid w-100"
-                                                        style={{ height: "160px", objectFit: "cover" }}
+                                                    {/* IMAGE SKELETON */}
+                                                    <div
+                                                        className="skeleton"
+                                                        style={{
+                                                            height: "160px",
+                                                            width: "100%"
+                                                        }}
                                                     />
 
-                                                    {/* STATUS BADGE */}
-                                                    <div className="area-badge">
-                                                        <span>{issue.status}</span>
+                                                    <div className="p-3">
+
+                                                        {/* TITLE */}
+                                                        <div
+                                                            className="skeleton mb-2"
+                                                            style={{ height: "18px", width: "80%" }}
+                                                        />
+
+                                                        {/* DESCRIPTION */}
+                                                        <div
+                                                            className="skeleton mb-2"
+                                                            style={{ height: "14px", width: "100%" }}
+                                                        />
+                                                        <div
+                                                            className="skeleton mb-3"
+                                                            style={{ height: "14px", width: "70%" }}
+                                                        />
+
+                                                        {/* USER + LOCATION */}
+                                                        <div className="d-flex justify-content-between">
+
+                                                            <div
+                                                                className="skeleton"
+                                                                style={{ height: "12px", width: "40%" }}
+                                                            />
+
+                                                            <div
+                                                                className="skeleton"
+                                                                style={{ height: "12px", width: "40%" }}
+                                                            />
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+
+                                    ) : (
+
+                                        // ================= REAL DATA =================
+                                        latestIssues?.slice(0, 4).map((issue) => (
+                                            <div key={issue._id} className="col-md-6">
+
+                                                <div className="area-highlight shadow-sm border rounded bg-white overflow-hidden">
+
+                                                    {/* IMAGE */}
+                                                    <div className="area-image-wrapper position-relative">
+
+                                                        <img
+                                                            src={`${issue.media[0]}`}
+                                                            alt={issue.title}
+                                                            className="img-fluid w-100"
+                                                            style={{ height: "160px", objectFit: "cover" }}
+                                                        />
+
+                                                        <div className="area-badge">
+                                                            <span>{issue.status}</span>
+                                                        </div>
+
+                                                        <span
+                                                            className="badge bg-dark position-absolute"
+                                                            style={{ top: "10px", left: "10px" }}
+                                                        >
+                                                            {issue.categoryId?.name || "Uncategorized"}
+                                                        </span>
+
                                                     </div>
 
-                                                    {/* CATEGORY BADGE */}
-                                                    <span
-                                                        className="badge bg-dark position-absolute"
-                                                        style={{ top: "10px", left: "10px" }}
-                                                    >
-                                                        {issue.categoryId?.name || "Uncategorized"}
-                                                    </span>
+                                                    {/* CONTENT */}
+                                                    <div className="area-info p-4 pt-1">
 
-                                                </div>
+                                                        <h5 className="mb-1">{issue.title}</h5>
 
-                                                {/* CONTENT */}
-                                                <div className="area-info p-4 pt-1">
+                                                        <p className="text-muted mb-2" style={{ fontSize: "14px" }}>
+                                                            {issue.description?.length > 80
+                                                                ? issue.description.slice(0, 80) + "..."
+                                                                : issue.description}
+                                                        </p>
 
-                                                    {/* TITLE */}
-                                                    <h5 className="mb-1">{issue.title}</h5>
+                                                        <div className="d-flex justify-content-between align-items-center mb-2">
 
-                                                    {/* DESCRIPTION */}
-                                                    <p className="text-muted mb-2 ellipsis" title={issue.description} style={{ fontSize: "14px" }}>
-                                                        {issue.description?.length > 80
-                                                            ? issue.description.slice(0, 80) + "..."
-                                                            : issue.description}
-                                                    </p>
+                                                            <small className="text-secondary">
+                                                                👤 {issue.reportedBy?.name || "User"}
+                                                            </small>
 
-                                                    {/* USER + LOCATION SIDE BY SIDE */}
-                                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                                        </div>
 
-                                                        <small className="text-secondary">
-                                                            👤 {issue.reportedBy?.name || "User"}
-                                                        </small>
-
-                                                        <small className="text-secondary">
+                                                        <small className="text-secondary ">
                                                             📍 {issue.location || "Not provided"}
                                                         </small>
-
                                                     </div>
 
                                                 </div>
 
                                             </div>
+                                        ))
+                                    )}
 
-                                        </div>
-                                    ))}
                                 </div>
                             </div>
 
-                            {/* ================= RIGHT PANEL ================= */}
                             {/* ================= RIGHT PANEL ================= */}
                             <div className="col-lg-4">
                                 <div className="location-overview ">
@@ -364,6 +461,19 @@ export default function AdminDashboard() {
                                             </div>
                                         </div>
 
+                                        <div className="benefit-item">
+                                            <div className="benefit-icon">
+                                                <i className="bi bi-people-fill" />
+                                            </div>
+
+                                            <div className="benefit-content">
+                                                <h6>Automated Workflows</h6>
+                                                <span>
+                                                    Smart routing instantly assigns civic issues to the right municipal team
+                                                </span>
+                                            </div>
+
+                                        </div>
                                     </div>
 
                                     <button
@@ -441,11 +551,12 @@ export default function AdminDashboard() {
 
                                 <Bar
                                     data={{
-                                        labels: categories.map(i => i.name),
+                                        labels: categories.slice(0, 5).map(i => i.name),
+
                                         datasets: [
                                             {
                                                 label: "Complaints by Category",
-                                                data: categories.map(i => i.value),
+                                                data: categories.slice(0, 5).map(i => i.value),
                                                 backgroundColor: "#28a745"
                                             }
                                         ]
@@ -453,7 +564,6 @@ export default function AdminDashboard() {
                                 />
                             </div>
                         </div>
-
 
                     </div>
 
@@ -482,7 +592,8 @@ export default function AdminDashboard() {
                                                             "#ffc107",
                                                             "#dc3545",
                                                             "#6f42c1",
-                                                            "#20c997"
+                                                            "#20c997",
+                                                            "#c92085"
                                                         ]
                                                     }
                                                 ]
@@ -501,60 +612,39 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
 
-                            {/* WEEKLY TREND */}
-                            {/* <div className="col-md-6">
-
-                                <h5 className="mb-2">Weekly Complaint Trend</h5>
-
+                            {/* DAILY ACTIVITY TREND */}
+                            <div className="col-md-6">
+                                <h5 className="mb-2">My Daily Activity</h5>
                                 <div className="card p-3 shadow-sm border-0" style={{ height: "420px" }}>
-
                                     <Line
                                         data={{
-                                            labels: weeklyLabels,
-
+                                            labels: dailyLabels,
                                             datasets: [
                                                 {
-                                                    label: "Complaints",
-
-                                                    data: weeklyCounts,
-
+                                                    label: "Issues Created (Last 7 Days)",
+                                                    data: dailyCounts,
                                                     borderColor: "#198754",
-
                                                     backgroundColor: "rgba(25,135,84,0.15)",
-
                                                     fill: true,
-
                                                     tension: 0.4,
-
-                                                    pointBackgroundColor: "#198754",
-
-                                                    pointRadius: 5
+                                                    pointRadius: 4
                                                 }
                                             ]
                                         }}
-
                                         options={{
                                             responsive: true,
                                             maintainAspectRatio: false,
-
-                                            plugins: {
-                                                legend: {
-                                                    display: true
-                                                }
-                                            },
-
                                             scales: {
                                                 y: {
                                                     beginAtZero: true,
-                                                    ticks: {
-                                                        precision: 0
-                                                    }
+                                                    ticks: { precision: 0 }
                                                 }
                                             }
                                         }}
                                     />
+
                                 </div>
-                            </div> */}
+                            </div>
 
                         </div>
 

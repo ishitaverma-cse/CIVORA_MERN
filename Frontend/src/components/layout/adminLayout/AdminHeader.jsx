@@ -1,13 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
-import { adminNotifications } from "../../../services/NotificationService";
+import { adminNotifications, adminDeleteNotifications } from "../../../services/NotificationService";
 
 export default function AdminHeader() {
     const [notifications, setNotifications] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const [activeTab, setActiveTab] = useState("citizens");
+    const [showAll, setShowAll] = useState(false);
 
     const dropdownRef = useRef();
     const navigate = useNavigate();
@@ -110,35 +111,55 @@ export default function AdminHeader() {
         return "Just now";
     };
 
-    const filteredNotifications =
-        notifications.filter((n) => {
+    const filteredNotifications = notifications.filter((n) => {
 
-            if (activeTab === "citizens") {
+        if (activeTab === "citizens") {
+            return n.type === "ISSUE_REPORTED";
+        }
 
-                return n.type === "ISSUE_REPORTED";
-            }
+        if (activeTab === "employees") {
+            return (
+                n.type === "STATUS_UPDATED" ||
+                n.type === "ISSUE_RESOLVED" ||
+                n.type === "EMPLOYEE_REMARK" ||
+                n.type === "ISSUE_ASSIGNED"
+            );
+        }
 
-            if (activeTab === "employees") {
+        return true;
+    });
 
-                return (
-                    n.type === "STATUS_UPDATED" ||
-                    n.type === "ISSUE_RESOLVED" ||
-                    n.type === "EMPLOYEE_REMARK" ||
-                    n.type === "ISSUE_ASSIGNED"
+    const displayedNotifications = showAll
+        ? filteredNotifications
+        : filteredNotifications.slice(0, 3);
+
+    // DELETE NOTIFICATION
+    const handleDeleteNotification = async (id, e) => {
+        e.stopPropagation();
+
+        try {
+            const res = await adminDeleteNotifications({
+                _id: id
+            });
+
+            if (res.data.success) {
+                setNotifications((prev) =>
+                    prev.filter((n) => n._id !== id)
                 );
+                toast.success("Notification deleted");
             }
-
-            return true;
-        });
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to delete");
+        }
+    };
 
     return (
         <>
-            <header id="header" className="header sticky-top">
+            <header id="header" className="header sticky-top ">
                 <div className="branding d-flex align-items-center">
                     <div className="container position-relative d-flex align-items-center justify-content-between">
                         <div className="logo d-flex align-items-center">
-                            {/* Uncomment the line below if you also wish to use an image logo */}
-                            {/* <img src="assets/img/logo.webp" alt=""> */}
                             <h1 className="sitename">CIVORA</h1>
                         </div>
 
@@ -288,6 +309,7 @@ export default function AdminHeader() {
                                                 </div>
 
                                                 <div
+                                                    onClick={() => setShowAll(prev => !prev)}
                                                     style={{
                                                         color: "#4f46e5",
                                                         fontSize: "14px",
@@ -295,7 +317,7 @@ export default function AdminHeader() {
                                                         cursor: "pointer"
                                                     }}
                                                 >
-                                                    See all
+                                                    {showAll ? "Show less" : "See all"}
                                                 </div>
                                             </div>
 
@@ -349,6 +371,7 @@ export default function AdminHeader() {
                                                             : "#888",
 
                                                         paddingBottom: "10px",
+                                                        paddingLeft: "20px",
 
                                                         borderBottom:
                                                             activeTab === "employees"
@@ -410,7 +433,7 @@ export default function AdminHeader() {
 
                                                 ) : (
 
-                                                    filteredNotifications.map((n) => {
+                                                    displayedNotifications.map((n) => {
                                                         console.log(
                                                             n.issueId?.categoryId?.name
                                                         );
@@ -431,19 +454,22 @@ export default function AdminHeader() {
                                                                     display: "flex",
                                                                     gap: "14px",
                                                                     alignItems: "flex-start",
+                                                                    borderRadius: "14px",
+                                                                    transform: "translateY(0px)",
                                                                     background: !n.isRead
                                                                         ? "#fafcff"
-                                                                        : "#fff"
+                                                                        : "#fff",
                                                                 }}
                                                                 onMouseEnter={(e) => {
-                                                                    e.currentTarget.style.background =
-                                                                        "#f7f8ff";
+                                                                    e.currentTarget.style.background = "#f7f8ff";
+                                                                    e.currentTarget.style.transform = "translateY(-2px)";
                                                                 }}
                                                                 onMouseLeave={(e) => {
                                                                     e.currentTarget.style.background =
                                                                         !n.isRead
                                                                             ? "#fafcff"
                                                                             : "#fff";
+                                                                    e.currentTarget.style.transform = "translateY(0px)";
                                                                 }}
                                                             >
 
@@ -460,7 +486,6 @@ export default function AdminHeader() {
                                                                         fontSize: "20px"
                                                                     }}
                                                                 >
-
                                                                     {
                                                                         n.issueId?.categoryId?.name
                                                                             ?.toLowerCase()
@@ -502,7 +527,7 @@ export default function AdminHeader() {
 
                                                                     {/* TOP */}
                                                                     <div
-                                                                        className="d-flex justify-content-between align-items-start"
+                                                                        className="d-flex justify-content-between align-items-start gap-2"
                                                                     >
                                                                         {/* ISSUE TITLE */}
                                                                         <div
@@ -522,13 +547,44 @@ export default function AdminHeader() {
                                                                                 fontSize: "12px",
                                                                                 color: "#999",
                                                                                 whiteSpace: "nowrap",
-                                                                                marginLeft: "10px"
+                                                                                paddingLeft: "50px"
                                                                             }}
                                                                         >
                                                                             {timeAgo(n.createdAt)}
                                                                         </div>
 
+                                                                        {/* DELETE BUTTON */}
+                                                                        <button
+                                                                            onClick={(e) =>
+                                                                                handleDeleteNotification(n._id, e)
+                                                                            }
+                                                                            style={{
+                                                                                border: "none",
+                                                                                background: "transparent",
+                                                                                color: "#dc3545",
+                                                                                cursor: "pointer",
+                                                                                fontSize: "15px"
+                                                                            }}
+                                                                        >
+                                                                            <i className="bi bi-trash"></i>
+                                                                        </button>
+
                                                                     </div>
+
+                                                                    {/* PROOF IMAGE */}
+                                                                    {activeTab === "employees" && n.proofImage && (
+                                                                        <img
+                                                                            src={`${n.proofImage}`}
+                                                                            alt="proof"
+                                                                            style={{
+                                                                                width: "100%",
+                                                                                height: "120px",
+                                                                                objectFit: "cover",
+                                                                                borderRadius: "12px",
+                                                                                marginTop: "12px"
+                                                                            }}
+                                                                        />
+                                                                    )}
 
                                                                     {/* REPORTED BY */}
                                                                     <div
@@ -540,9 +596,31 @@ export default function AdminHeader() {
                                                                     >
                                                                         Reported by{" "}
                                                                         <span style={{ fontWeight: "600" }}>
-                                                                            {n.reportedBy?.name}
+                                                                            {n.issueId?.reportedBy?.name || "Citizen"}
                                                                         </span>
                                                                     </div>
+
+                                                                    {/* STATUS */}
+                                                                    {activeTab === "employees" && (
+                                                                        <div
+                                                                            style={{
+                                                                                marginTop: "8px"
+                                                                            }}
+                                                                        >
+                                                                            <span
+                                                                                className={`badge ${n.status === "Resolved"
+                                                                                    ? "bg-success"
+                                                                                    : n.status === "Rejected"
+                                                                                        ? "bg-danger"
+                                                                                        : n.status === "In Progress"
+                                                                                            ? "bg-primary"
+                                                                                            : "bg-warning text-dark"
+                                                                                    }`}
+                                                                            >
+                                                                                {n.status || "Pending"}
+                                                                            </span>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         );

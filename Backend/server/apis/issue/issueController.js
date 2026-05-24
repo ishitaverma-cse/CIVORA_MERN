@@ -3,10 +3,13 @@ const userModel = require('../user/userModel')
 const upvoteModel = require('../upvote/upvoteModel')
 const employeeModel = require('../employee/employeeModel')
 const notificationModel = require("../notification/notificationModel");
+const { upload } = require("../../middleware/multer");
 
 // CREATE OPERATION
 const add = async (req, res) => {
     try {
+
+        console.log(req.file);
         // CHECK BLOCK FIRST / USER STATUS
         const { reportedBy } = req.body;
         const user = await userModel.findById(reportedBy);
@@ -43,7 +46,15 @@ const add = async (req, res) => {
             })
         }
         else {
-            let existingData = await issueModel.findOne({ title: incomingData.title })
+            incomingData.title = incomingData.title.trim().toLowerCase();
+            incomingData.location = incomingData.location.trim().toLowerCase();
+
+            //CHECK DUPLICATE
+            let existingData = await issueModel.findOne({
+                title: incomingData.title,
+                location: incomingData.location,
+                categoryId: incomingData.categoryId
+            })
 
             if (existingData) {
                 return res.json({
@@ -56,6 +67,18 @@ const add = async (req, res) => {
 
             const newAutoId = last ? last.autoId + 1 : 1;
 
+            let image = 'no_image.jpg'
+            try {
+                let imageUrl = await upload(req.file.buffer)
+                image = imageUrl
+            } catch (err) {
+                res.json({
+                    status: 500,
+                    success: false,
+                    message: " Failed to upload image in cloud: ", err
+                })
+            }
+
             //SAVE ISSUE
             let issueData = new issueModel({
                 autoId: newAutoId,
@@ -64,7 +87,7 @@ const add = async (req, res) => {
                 reportedBy: incomingData.reportedBy,
                 description: incomingData.description,
                 location: incomingData.location,
-                media: req.file ? req.file.filename : "",
+                media: image,
                 aiSeverityScore: incomingData.aiSeverityScore,
                 status: "Pending",
                 isPublic: true,
@@ -269,7 +292,7 @@ const update = async (req, res) => {
             if (incomingData.media) { issue.media = incomingData.media }
             if (incomingData.aiSeverityScore) { issue.aiSeverityScore = incomingData.aiSeverityScore }
         }
-        // CITIZEN LOGIC (LIMITED)
+        // CITIZEN LOGIC 
         else if (userType === 3) {
 
             // Only allow editing own issue (optional check)
@@ -281,8 +304,25 @@ const update = async (req, res) => {
             }
 
             if (incomingData.title) issue.title = incomingData.title;
+            if (incomingData.location) issue.location = incomingData.location;
+
             if (incomingData.description) issue.description = incomingData.description;
-            if (incomingData.media) issue.media = incomingData.media;
+            if (req.file) {
+                let image = issue.media;
+
+                try {
+                    let imageUrl = await upload(req.file.buffer);
+                    image = imageUrl;
+                } catch (err) {
+                    return res.json({
+                        success: false,
+                        message: "Image upload failed"
+                    });
+                }
+
+                issue.media = image;
+            }
+
 
         }
         issue.updatedAt = Date.now();

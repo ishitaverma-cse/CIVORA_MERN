@@ -29,6 +29,7 @@ export default function UserHeader() {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [notificationCount, setNotificationCount] = useState(0);
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
     const isLogin = localStorage.getItem("isLogin");
     const navigate = useNavigate();
@@ -222,134 +223,168 @@ export default function UserHeader() {
     }, []);
 
 
+
+
     return (
         <>
             <header id="header" className="header sticky-top">
-                <div className="branding d-flex align-items-cente">
-                    <div className="container position-relative d-flex align-items-center justify-content-between">
-                        <div className="logo d-flex align-items-center">
-                            <h1 className="sitename">CIVORA</h1>
-                        </div>
-                        <nav id="navmenu" className="navmenu">
-                            <ul>
-                                <li>
-                                    <Link to="/" className="active">
-                                        Home
-                                    </Link>
-                                </li>
-
-                                <li>
-                                    <Link to="/about">About</Link>
-                                </li>
-
-                                <li>
-                                    <Link to="/issues"> Issues</Link>
-                                </li>
-
-                                <li className="pe-2">
-                                    <Link to="/contact">Contact</Link>
-                                </li>
-
-                                {!isLogin ? (
-                                    <>
-                                        <li className="navmenu ps-2">
-                                            <button
-                                                onClick={() => setShowRegisterModal(true)}
-                                                className="btn btn-subtle-success border border-dark text-white rounded-3 px-4 shadow"
-                                            >
-                                                <i className="bi bi-box-arrow-in-right me-2"></i>
-                                                Register
-                                            </button>
-                                        </li>
-                                        <li className="navmenu p-4">
-                                            <button
-                                                onClick={() => setShowLoginModal(true)}
-                                                className="btn btn-subtle-success border border-dark text-white rounded-3 px-4 shadow"
-                                            >
-                                                <i className="bi bi-box-arrow-in-right me-2"></i>
-                                                Login
-                                            </button>
-                                        </li>
-                                    </>
-                                ) : (
-                                    <li className="navmenu">
-                                        <button
-                                            onClick={() => {
-                                                localStorage.removeItem("isLogin");
-                                                localStorage.removeItem("token");
-                                                localStorage.removeItem("userId");
-
-                                                navigate("/");
-                                            }}
-                                            className="btn btn-subtle-success borfer border-dark text-white rounded-3 px-4 shadow"
+                <div className="branding d-flex align-items-center">
+                    <div className="container position-relative">
+                        <div className="d-flex align-items-center justify-content-between">
+                            <div className="logo d-flex align-items-center">
+                                <h1 className="sitename">CIVORA</h1>
+                            </div>
+                            <nav
+                                id="navmenu"
+                                className={`navmenu ${mobileNavOpen ? "mobile-nav-active" : ""}`}
+                            >
+                                <ul>
+                                    <li>
+                                        <Link to="/" className="active"
+                                            onClick={() => setMobileNavOpen(false)}
                                         >
-                                            <i className="bi bi-door-open me-2"></i>
-                                            Logout
-                                        </button>
+                                            Home
+                                        </Link>
                                     </li>
-                                )}
 
-                                  <li className="navmenu ps-0">
-                                    <Link
-                                        to="/notifications"
-                                        style={{
-                                            position: "relative",
-                                            textDecoration: "none"
-                                        }}
-                                    >
-                                        {/* BELL CONTAINER */}
-                                        <div
-                                        className="ps-2"
+                                    <li>
+                                        <Link to="/about"
+                                            onClick={() => setMobileNavOpen(false)}
+                                        >
+                                            About
+                                        </Link>
+                                    </li>
+
+                                    <li>
+                                        <Link to="/issues"
+                                            onClick={() => setMobileNavOpen(false)}
+                                        >
+                                            Issues
+                                        </Link>
+                                    </li>
+
+                                    <li className="pe-1">
+                                        <Link to="/contact"
+                                            onClick={() => setMobileNavOpen(false)}
+                                        >
+                                            Contact
+                                        </Link>
+                                    </li>
+
+                                    {!isLogin ? (
+                                        <>
+                                            <li className="pe-3">
+                                                <button
+                                                    onClick={() => {
+                                                        setShowRegisterModal(true);
+                                                        setMobileNavOpen(false);
+                                                    }}
+                                                    className="btn btn-subtle-success border border-dark text-white rounded-3 px-4 shadow"
+                                                >
+                                                    <i className="bi bi-box-arrow-in-right me-2"></i>
+                                                    Register
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button
+                                                    onClick={() => {
+                                                        setShowLoginModal(true);
+                                                        setMobileNavOpen(false);
+                                                    }}
+                                                    className="btn btn-subtle-success border border-dark text-white rounded-3 px-4 shadow"
+                                                >
+                                                    <i className="bi bi-box-arrow-in-right me-2"></i>
+                                                    Login
+                                                </button>
+                                            </li>
+                                        </>
+                                    ) : (
+                                        <li>
+                                            <button
+                                                onClick={() => {
+                                                    localStorage.removeItem("isLogin");
+                                                    localStorage.removeItem("token");
+                                                    localStorage.removeItem("userId");
+
+                                                    setMobileNavOpen(false);
+                                                    navigate("/");
+                                                }}
+                                                className="btn btn-subtle-success borfer border-dark text-white rounded-3 px-4 shadow"
+                                            >
+                                                <i className="bi bi-door-open me-2"></i>
+                                                Logout
+                                            </button>
+                                        </li>
+                                    )}
+
+                                    <li>
+                                        <Link
+                                            to="/notifications"
+                                            onClick={() => setMobileNavOpen(false)}
                                             style={{
-                                                width: "46px",
-                                                height: "46px",
-                                                borderRadius: "70%",
-                                                background: "rgba(255,255,255,0.12)",
-                                                backdropFilter: "blur(10px)",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                border: "1px solid rgba(255,255,255,0.15)",
-                                                boxShadow: "0 6px 18px rgba(0,0,0,0.12)"
+                                                position: "relative",
+                                                textDecoration: "none"
                                             }}
                                         >
-                                            <FaBell
-                                                size={50}
-                                                color="white"
-                                            />
-                                        </div>
+                                            {/* BELL CONTAINER */}
+                                            <div
+                                                onClick={() => setMobileNavOpen(false)}
+                                                style={{
+                                                    width: "46px",
+                                                    height: "46px",
+                                                    borderRadius: "70%",
+                                                    background: "rgba(255,255,255,0.12)",
+                                                    backdropFilter: "blur(10px)",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    border: "1px solid rgba(255,255,255,0.15)",
+                                                    boxShadow: "0 6px 18px rgba(0,0,0,0.12)"
+                                                }}
+                                            >
+                                                <FaBell
+                                                    size={24}
+                                                    color="white"
+                                                />
+                                            </div>
 
-                                        {/* NOTIFICATION COUNT */}
-                                        {
-                                            notificationCount > 0 && (
-                                                <span
-                                                    style={{
-                                                        position: "absolute",
-                                                        top: "5px",
-                                                        right: "-1px",
-                                                        background: "#198754",
-                                                        color: "white",
-                                                        minWidth: "22px",
-                                                        height: "22px",
-                                                        borderRadius: "50%",
-                                                        fontSize: "11px",
-                                                        fontWeight: "700",
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        border: "2px solid white",
-                                                        boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
-                                                    }}
-                                                >
-                                                    {notificationCount}
-                                                </span>
-                                            )
-                                        }
-                                    </Link>
-                                </li>
-                            </ul>
-                            <i className="mobile-nav-toggle d-xl-none bi bi-list" />
-                        </nav>
+                                            {/* NOTIFICATION COUNT */}
+                                            {
+                                                notificationCount > 0 && (
+                                                    <span
+                                                        onClick={() => setMobileNavOpen(false)}
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "5px",
+                                                            right: "-1px",
+                                                            background: "#198754",
+                                                            color: "white",
+                                                            minWidth: "22px",
+                                                            height: "22px",
+                                                            borderRadius: "50%",
+                                                            fontSize: "11px",
+                                                            fontWeight: "700",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            border: "2px solid white",
+                                                            boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+                                                        }}
+                                                    >
+                                                        {notificationCount}
+                                                    </span>
+                                                )
+                                            }
+                                        </Link>
+                                    </li>
+                                </ul>
+                                <i
+                                    className="mobile-nav-toggle d-xl-none bi bi-list"
+                                    onClick={() => setMobileNavOpen(!mobileNavOpen)}
+                                />
+                            </nav>
+                        </div>
+
                     </div>
                 </div>
             </header>

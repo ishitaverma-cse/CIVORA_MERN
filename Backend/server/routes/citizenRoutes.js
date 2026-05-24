@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router() 
-const upload = require("../middleware/multer");
+// const upload = require("../middleware/multer");
+const multer = require('multer');
+
 
 
 //import
@@ -10,6 +12,10 @@ const upvoteController = require('../apis/upvote/upvoteController')
 const homeController = require("../apis/homee/homeController");
 const contactController = require("../apis/contact/contactController");
 const notificationController = require('../apis/notification/notificationController')
+const chatbotController = require('../apis/chatBot/chatbotController');
+
+const cloudStorage = multer.memoryStorage();
+const cloudUpload = multer({ storage: cloudStorage });
 
 
 
@@ -26,15 +32,20 @@ router.post('/contact/add', contactController.add);
 //ISSUE
 router.post('/issue/public', issueController.public);
 
+//CHATBOT
+router.post("/chat", chatbotController.chatbot);
+
 //TOKEN CHECKER
 router.use(require('../middleware/tokenChecker')); 
+
+
  
 //PROTECTED routes
 //ISSUE
-router.post('/issue/add', upload.single("media"), issueController.add);
+router.post('/issue/add', cloudUpload.single("media"), issueController.add);
 router.post('/issue/all', issueController.all);
 router.post('/issue/single', issueController.single);
-router.post('/issue/update', issueController.update);
+router.post('/issue/update',cloudUpload.single("media"), issueController.update);
 router.post('/issue/softDelete', issueController.softDelete);
 router.post('/issue/my', issueController.myIssues);
 
@@ -47,5 +58,6 @@ router.post('/upvote/softDelete', upvoteController.softDelete);
 
 //NOTIFICATION
 router.post('/notification/myNotifications', notificationController.myNotifications)
+router.post('/notification/softDelete', notificationController.softDelete)
 
 module.exports = router;
