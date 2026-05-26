@@ -35,7 +35,6 @@ export default function About() {
 
             return;
         }
-
         navigate("/issues");
     };
 
@@ -72,7 +71,7 @@ export default function About() {
                                         data-aos-delay={200}
                                     >
                                         <img
-                                            src="../assets/img/city/city.jpg"
+                                            src="/assets/img/city/city.jpg"
                                             alt="Smart City Overview"
                                             className="img-fluid main-image"
                                         />
@@ -95,7 +94,7 @@ export default function About() {
                                         data-aos-delay={300}
                                     >
                                         <img
-                                            src="../assets/img/city/cityAbout2.jpg"
+                                            src="/assets/img/city/cityAbout2.jpg"
                                             alt="Luxury Suite"
                                             className="img-fluid"
                                         />

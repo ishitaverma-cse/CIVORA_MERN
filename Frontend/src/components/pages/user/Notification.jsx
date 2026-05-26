@@ -406,7 +406,7 @@ export default function Notifications() {
                                             {
                                                 item.proofImage && (
                                                     <img
-                                                        src={`http://localhost:3000/uploads/${item.proofImage}`}
+                                                        src={`${item.proofImage}`}
                                                         alt="proof"
                                                         className="img-fluid rounded-4 mt-4 notification-proof"
                                                         style={{

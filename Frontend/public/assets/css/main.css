@@ -8338,3 +8338,15 @@ body {
   }
 
 }
+
+/* CONTACT */
+.map-container {
+    position: relative;
+}
+
+.map-loader {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    z-index: 2;
+}

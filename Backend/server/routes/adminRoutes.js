@@ -12,7 +12,7 @@ const assignmentController = require('../apis/assignment/assignmentController')
 const upvoteController = require('../apis/upvote/upvoteController')
 const notificationController = require('../apis/notification/notificationController')
 const dashboardController  = require("../apis/dashboard/dashboardController");
-const chatbotController = require('../apis/chatBot/chatbotController');
+
 
 
 //create route 
@@ -22,8 +22,6 @@ router.post('/sendOtp', userController.sendOtp);
 router.post('/resetPassword', userController.resetPassword);
 router.post('/allCitizens', userController.allCitizens);
 router.post('/blockUser', userController.blockUser);
-
-router.post('/chat', chatbotController.chatbot);
 
 
 

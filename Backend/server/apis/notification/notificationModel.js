@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const notificationSchema = new mongoose.Schema({
-    autoId: { type: Number, unique: true, required: true },
+  
     // receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User",  },
     // senderId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     issueId: { type: mongoose.Schema.Types.ObjectId, ref: "issue" },

@@ -14,13 +14,9 @@ const cloudUpload = multer({ storage: cloudStorage });
 const employeeController = require('../apis/employee/employeeController')
 const issueController = require('../apis/issue/issueController')
 // const upload = require('../middleware/multer');
-const chatbotController = require('../apis/chatBot/chatbotController');
 
 
 // create routes
-//CHATBOT
-router.post('/chat', chatbotController.chatbot);
-
 //EMPLOYEE
 router.post('/employee/all', employeeController.all);
 router.post('/employee/single', employeeController.single);

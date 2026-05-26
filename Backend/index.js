@@ -47,6 +47,9 @@ app.use('/citizen', CitizenRoutes);
 const EmployeeRoutes = require('./server/routes/employeeRoutes')    //import employee routes
 app.use('/employee', EmployeeRoutes)
 
+const chatbotRoutes = require('./server/routes/chatbotRoutes')       //import chatbot routes
+app.use('/api', chatbotRoutes)
+
 
 //default route
 app.get('/', (req, res) => {                                //HTTP GET request(endpoint, (incoming request/data from user, response you send back)).

@@ -20,7 +20,7 @@ const add = async (req, res) => {
 
         // CREATE NEW TIMELINE ENTRY
         let notificationData = new notificationModel({
-            autoId: await notificationModel.countDocuments({}) + 1,
+         
             issueId: incomingData.issueId,
             userId: incomingData.userId,
             reportedBy: incomingData.reportedBy,
@@ -214,7 +214,8 @@ const myNotifications = async (req, res) => {
         const notifications = await notificationModel
             .find({
                 userId,
-                isDelete: false
+                isDelete: false,
+                type: { $in: ["STATUS_UPDATED", "ISSUE_RESOLVED", "ISSUE_ASSIGNED"] }
             })
             .populate("issueId")
             .populate("reportedBy")

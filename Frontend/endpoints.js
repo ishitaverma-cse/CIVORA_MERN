@@ -2,6 +2,8 @@
 export const BASE_URL = 'http://localhost:3000'
 // export const BASE_URL = 'http://192.168.29.65:3000'
 
+
+
 //user (auth)
 export const REGISTER = '/citizen/register'
 export const LOGIN = '/admin/login'
@@ -9,6 +11,7 @@ export const SENDOTP = '/admin/sendOtp'
 export const RESETPASSWORD = '/admin/resetPassword'
 export const ALLCITIZEN = '/admin/allCitizens'
 export const BLOCKUSER = '/admin/blockUser'
+export const CHATBOT = '/api/chat'
 
 //Dashboard
 export const DASHBOARD = '/admin/dashboard'

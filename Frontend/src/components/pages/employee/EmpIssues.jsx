@@ -100,13 +100,34 @@ export default function EmpIssues() {
         }
     };
 
-    const openModal = (issue) => {
-        setSelectedIssue({ ...issue });  //force fresh copy
-        setRemarks(issue.remarks || "");
-        setStatus(issue.status || "Pending");
-        setProofFile(null);
-        setIsEditing(false);
-        setShowModal(true);
+    const openModal = async (issue) => {
+
+        try {
+            const issueRes = await emp_allIssue();
+            if (issueRes.data.success) {
+
+                const freshIssue = issueRes.data.data.find(
+                    (item) => item._id === issue._id
+                );
+
+                if (!freshIssue) {
+                    return toast.error("Issue not found");
+                }
+                setSelectedIssue({
+                    ...freshIssue,
+                    proofImage: freshIssue.proofImage || ""
+                });
+                setRemarks(freshIssue.remarks || "");
+                setStatus(freshIssue.status || "Pending");
+                setProofFile(null);
+                setIsEditing(false);
+                setShowModal(true);
+            }
+
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to load issue");
+        }
     };
 
     const closeModal = () => {
@@ -183,8 +204,8 @@ export default function EmpIssues() {
         }
     };
 
+    //HANDLE STATUS CHANGES
     const handleStatusChange = async () => {
-
         console.log("Status: ", status);
 
         if (!selectedIssue || !selectedIssue?._id) {
@@ -209,7 +230,7 @@ export default function EmpIssues() {
                 return toast.error("Remarks are required");
             }
 
-            if (!proofFile) {
+            if (!proofFile && !selectedIssue?.proofImage) {
                 return toast.error("Proof image/video is required");
             }
         }
@@ -230,44 +251,69 @@ export default function EmpIssues() {
 
             toast.success("Issue Updated");
 
-            fetchIssues();
+            const updatedIssue = res.data.data;
 
-            setSelectedIssue(prev => ({
-                ...prev,
-                status,
-                remarks
-            }));
+            // UPDATE ALL ISSUES STATE
+            setAllIssues(prev =>
+                prev.map(issue =>
+                    issue._id === updatedIssue._id
+                        ? updatedIssue
+                        : issue
+                )
+            );
 
-            closeModal();
+            // UPDATE FILTERED ISSUES STATE
+            setFilteredIssues(prev =>
+                prev.map(issue =>
+                    issue._id === updatedIssue._id
+                        ? updatedIssue
+                        : issue
+                )
+            );
+
+            // UPDATE MODAL ISSUE
+            setSelectedIssue(updatedIssue);
+
+            // closeModal();
 
         } else {
-
             toast.error(res.data.message);
         }
+    };
+
+    //HANDLE SUBMIT
+    const handleSubmit = async () => {
+        const updated = await emp_updateIssue({
+            id: selectedIssue._id,
+            status
+        });
+
+        setSelectedIssue(updated.data); // 🔥 IMPORTANT FIX
+        setIsEditing(false);
     };
 
 
     return (
         <>
             {/* SECTION TITLE */}
-                <div className="page-title light-background">
-                    <div className="container d-lg-flex justify-content-between align-items-center">
-                        <h1 className="mb-2 mb-lg-0">Issues</h1>
-                        <nav className="breadcrumbs">
-                            <ol>
-                                <li>
-                                    <a href="/employee/dashboard">Dashboard</a>
-                                </li>
-                                <li className="current">Issues</li>
-                            </ol>
-                        </nav>
-                    </div>
+            <div className="page-title light-background">
+                <div className="container d-lg-flex justify-content-between align-items-center">
+                    <h1 className="mb-2 mb-lg-0">Issues</h1>
+                    <nav className="breadcrumbs">
+                        <ol>
+                            <li>
+                                <a href="/employee/dashboard">Dashboard</a>
+                            </li>
+                            <li className="current">Issues</li>
+                        </ol>
+                    </nav>
                 </div>
+            </div>
             <div
                 className="min-vh-100 py-4"
-                style={{ background: "#e6eef8"}}
+                style={{ background: "#e6eef8" }}
             >
-                
+
                 <div className="container-fluid px-lg-5">
                     {/* HEADER */}
                     <div
@@ -360,7 +406,7 @@ export default function EmpIssues() {
                                                 <img
                                                     src={
                                                         item.media?.length > 0
-                                                            ? `http://localhost:3000/${item.media[0]}`
+                                                            ? item.media[0]
                                                             : "https://images.unsplash.com/photo-1581093458791-9d09f15c6d5e"
                                                     }
                                                     alt={item.title}
@@ -597,13 +643,12 @@ export default function EmpIssues() {
                                         </div>
 
                                         {/* PROOF */}
-
-
                                         {/* REMARKS */}
                                         <div className="mb-3">
                                             <label className="form-label fw-semibold">
                                                 Remarks
                                             </label>
+
 
                                             <textarea
                                                 className="form-control rounded-4"
@@ -615,7 +660,6 @@ export default function EmpIssues() {
                                         </div>
 
                                         {/* PROOF UPLOAD */}
-
                                         <div className="mb-3">
 
                                             <label className="form-label fw-semibold">
@@ -633,9 +677,7 @@ export default function EmpIssues() {
 
                                             {
                                                 proofFile && (
-
                                                     <div className="mt-3">
-
                                                         {
                                                             proofFile.type.startsWith("video/")
                                                                 ? (
@@ -734,10 +776,11 @@ export default function EmpIssues() {
                                         </p>
 
                                         {/* PROOF MEDIA */}
+                                        {console.log("Selected Issue:", selectedIssue)}
+                                        {console.log("Proof Image:", selectedIssue?.proofImage)}
 
                                         {
-                                            selectedIssue.proofImage && (
-
+                                            selectedIssue?.proofImage && (
                                                 <div className="mt-4">
 
                                                     <h6 className="fw-bold mb-3">
@@ -745,7 +788,10 @@ export default function EmpIssues() {
                                                     </h6>
 
                                                     {
-                                                        selectedIssue.proofImage.match(/\.(mp4|webm|ogg)$/i)
+                                                        selectedIssue.proofImage.includes(".mp4") ||
+                                                            selectedIssue.proofImage.includes(".webm") ||
+                                                            selectedIssue.proofImage.includes(".ogg")
+
                                                             ? (
 
                                                                 <video
@@ -757,15 +803,16 @@ export default function EmpIssues() {
                                                                     }}
                                                                 >
                                                                     <source
-                                                                        src={`http://localhost:3000/${selectedIssue.proofImage}`}
+                                                                        src={selectedIssue.proofImage}
                                                                     />
                                                                 </video>
 
                                                             )
+
                                                             : (
 
                                                                 <img
-                                                                    src={`http://localhost:3000/${selectedIssue.proofImage}`}
+                                                                    src={selectedIssue.proofImage}
                                                                     alt="proof"
                                                                     className="img-fluid rounded-4"
                                                                     style={{

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
 import { homeStats } from "../../../services/userService";
+import { sendChat } from "../../../services/ChatService";
 
 export default function Home() {
 
@@ -11,6 +12,11 @@ export default function Home() {
         activeCitizens: 0,
         departments: 0
     });
+
+    const [open, setOpen] = useState(false);
+    const [message, setMessage] = useState("");
+    const [chat, setChat] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     async function fetchHomeStats() {
         try {
@@ -25,6 +31,32 @@ export default function Home() {
     useEffect(() => {
         fetchHomeStats();
     }, []);
+
+    //SEND MSG
+    const sendMessage = async () => {
+        if (!message.trim()) return;
+
+        const userMsg = message;
+        setMessage("");
+
+        setChat(prev => [...prev, { role: "user", text: userMsg }]);
+        setLoading(true);
+
+        try {
+            const res = await sendChat(userMsg);
+
+            setChat(prev => [
+                ...prev,
+                { role: "bot", text: res.data.reply }
+            ]);
+        } catch (err) {
+            setChat(prev => [
+                ...prev,
+                { role: "bot", text: "AI error occurred" }
+            ]);
+        }
+        setLoading(false);
+    };
 
     const slides = [
         {
@@ -101,7 +133,7 @@ export default function Home() {
                                     className="btn btn-primary ms-5"
                                 >
                                     <div>
-                                        View Issues
+                                        Start Reporting
                                     </div>
                                 </Link>
 
@@ -368,182 +400,108 @@ export default function Home() {
 
             </section>
 
-            {/* ================= HOW CIVORA WORKS ================= */}
-            <section className="city-flow-section">
-                <div
-                    className="min-vh-100 py-4"
-                    style={{ background: "#f8f9fa" }}
-                >
-                    <div className="container-fluid px-lg-5">
+            {/* ================= FUTURISTIC CITY PROBLEMS ================= */}
+<section className="city-flow-section">
+    <div className="min-vh-100 py-5" style={{ background: "#f8f9fa" }}>
+        <div className="container-fluid px-lg-5">
 
-                        {/* HEADING */}
-                        <div className="flow-heading text-center">
-                            <span className="flow-badge">
-                                HOW IT WORKS
-                            </span>
+            {/* HEADING */}
+            <div className="flow-heading text-center mb-5">
+                <span className="flow-badge">CITY REALITY CHECK</span>
+                <h2>When Cities Start Breaking in Real Time</h2>
+                <p>
+                    Modern cities face invisible failures every day — flooding, traffic collapse,
+                    and pollution spikes. CIVORA detects and resolves them faster.
+                </p>
+            </div>
 
-                            <h2>
-                                A Smarter Way To Manage Civic Issues
-                            </h2>
+            {/* ================= ROW 1 ================= */}
+            <div className="flow-row d-flex flex-wrap align-items-center mb-5">
 
-                            <p>
-                                CIVORA connects citizens, municipal departments and field
-                                employees through a seamless digital governance ecosystem.
-                            </p>
-
-                        </div>
-
-                        {/* ROW 1 */}
-                        <div className="flow-row">
-
-                            {/* IMAGE */}
-                            <div className="flow-image">
-                                <img
-                                    src="/assets/img/city/report_issue.jpg"
-                                    alt="Report Issue"
-                                />
-                            </div>
-
-                            {/* CONTENT */}
-                            <div className="flow-content">
-                                <span className="flow-step">
-                                    STEP 01
-                                </span>
-
-                                <h3>
-                                    Report Civic Problems Instantly
-                                </h3>
-
-                                <p>
-                                    Citizens can easily report potholes, garbage,
-                                    water leakage, damaged roads and infrastructure
-                                    problems using images, location and descriptions.
-                                </p>
-
-                                <div className="flow-points">
-
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Upload issue photos instantly
-                                    </div>
-
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Real-time location tracking
-                                    </div>
-
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Fast and transparent reporting
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        {/* ROW 2 */}
-                        <div className="flow-row reverse-flow">
-
-                            {/* IMAGE */}
-                            <div className="flow-image">
-                                <img
-                                    src="/assets/img/city/smart_assignment.jpg"
-                                    alt="Assignment"
-                                />
-                            </div>
-
-                            {/* CONTENT */}
-                            <div className="flow-content">
-                                <span className="flow-step">
-                                    STEP 02
-                                </span>
-
-                                <h3>
-                                    Smart Department Assignment
-                                </h3>
-
-                                <p>
-                                    CIVORA intelligently routes complaints to the
-                                    correct municipal departments and employees
-                                    for quick response and efficient handling.
-                                </p>
-
-                                <div className="flow-points">
-
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Automated workflow system
-                                    </div>
-
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Faster complaint allocation
-                                    </div>
-
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Reduced manual delays
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        {/* ROW 3 */}
-                        <div className="flow-row">
-
-                            {/* IMAGE */}
-                            <div className="flow-image">
-                                <img
-                                    src="/assets/img/city/track_progress.jpg"
-                                    alt="Track Progress"
-                                />
-                            </div>
-
-                            {/* CONTENT */}
-                            <div className="flow-content">
-                                <span className="flow-step">
-                                    STEP 03
-                                </span>
-
-                                <h3>
-                                    Track Resolution Progress Live
-                                </h3>
-
-                                <p>
-                                    Citizens receive real-time updates regarding
-                                    complaint progress, employee actions and final
-                                    issue resolution directly through the platform.
-                                </p>
-
-                                <div className="flow-points">
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Live complaint status updates
-                                    </div>
-
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Improved accountability
-                                    </div>
-
-                                    <div>
-                                        <i className="bi bi-check-circle-fill"></i>
-                                        Better citizen engagement
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                {/* IMAGE LEFT */}
+                <div className="flow-image col-md-6">
+                    <img
+                        src="/assets/img/city/flood_city.jpg"
+                        alt="Urban Flooding"
+                        className="img-fluid rounded-4 shadow"
+                    />
                 </div>
 
+                {/* TEXT RIGHT */}
+                <div className="flow-content col-md-6 p-4">
+                    <span className="flow-step">CRISIS 01</span>
+                    <h3>Sudden Urban Flooding Events</h3>
+                    <p>
+                        Extreme rainfall overwhelms drainage systems within minutes,
+                        causing transport collapse and property damage in smart cities.
+                    </p>
+                    <div className="flow-points">
+                        <div>⚠️ Real-time water level spikes</div>
+                        <div>⚠️ Blocked drainage detection</div>
+                        <div>⚠️ Emergency response delay reduction</div>
+                    </div>
+                </div>
+            </div>
 
-            </section>
+            {/* ================= ROW 2 ================= */}
+            <div className="flow-row d-flex flex-wrap align-items-center mb-5 flex-md-row-reverse">
 
+                {/* IMAGE RIGHT */}
+                <div className="flow-image col-md-6">
+                    <img
+                        src="/assets/img/city/traffic_ai.jpg"
+                        alt="AI Traffic Gridlock"
+                        className="img-fluid rounded-4 shadow"
+                    />
+                </div>
+
+                {/* TEXT LEFT */}
+                <div className="flow-content col-md-6 p-4">
+                    <span className="flow-step">CRISIS 02</span>
+                    <h3>AI-Controlled Traffic Gridlocks</h3>
+                    <p>
+                        Even intelligent traffic systems fail during peak overload,
+                        creating cascading congestion across entire city zones.
+                    </p>
+                    <div className="flow-points">
+                        <div>🚦 Signal synchronization failure</div>
+                        <div>🚦 Emergency route blockage</div>
+                        <div>🚦 Dynamic rerouting required</div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ================= ROW 3 ================= */}
+            <div className="flow-row d-flex flex-wrap align-items-center">
+
+                {/* IMAGE LEFT */}
+                <div className="flow-image col-md-6">
+                    <img
+                        src="/assets/img/city/pollution_future.jpg"
+                        alt="City Pollution Dome"
+                        className="img-fluid rounded-4 shadow"
+                    />
+                </div>
+
+                {/* TEXT RIGHT */}
+                <div className="flow-content col-md-6 p-4">
+                    <span className="flow-step">CRISIS 03</span>
+                    <h3>Invisible Air Pollution Surges</h3>
+                    <p>
+                        Toxic air pockets form unexpectedly in dense zones,
+                        affecting thousands before sensors even react.
+                    </p>
+                    <div className="flow-points">
+                        <div>🌫️ AQI spikes in real time</div>
+                        <div>🌫️ Health risk alerts delayed</div>
+                        <div>🌫️ Smart monitoring required</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
         </div>
     );
 }

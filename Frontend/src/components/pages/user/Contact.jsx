@@ -11,6 +11,7 @@ export default function Contact() {
     const [subject, setSubject] = useState("");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [mapLoading, setMapLoading] = useState(true);
 
     //CONTACT FORM
     const handleContactForm = async (e) => {
@@ -80,8 +81,16 @@ export default function Contact() {
 
                 {/* Contact Section */}
                 <section id="contact" className="contact section">
+
                     {/* Map Section */}
-                    <div className="map-container mb-5">
+                    <div className="map-container mb-5 position-relative">
+
+                        {mapLoading && (
+                            <div className="map-loader d-flex justify-content-center align-items-center">
+                                <div className="spinner-border text-success" role="status" />
+                            </div>
+                        )}
+
                         <iframe
                             src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d13774546.535066167!2d77.7919254406362!3d21.878762103143828!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1778922567467!5m2!1sen!2sin"
                             width="100%"
@@ -90,8 +99,10 @@ export default function Contact() {
                             allowFullScreen=""
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
+                            onLoad={() => setMapLoading(false)}
                         />
                     </div>
+                    
                     <div className="container" data-aos="fade-up" data-aos-delay={100}>
                         {/* Contact Info */}
                         <div className="row g-4 mb-5" data-aos="fade-up" data-aos-delay={300}>

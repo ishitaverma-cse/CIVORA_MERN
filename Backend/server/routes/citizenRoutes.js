@@ -12,7 +12,6 @@ const upvoteController = require('../apis/upvote/upvoteController')
 const homeController = require("../apis/homee/homeController");
 const contactController = require("../apis/contact/contactController");
 const notificationController = require('../apis/notification/notificationController')
-const chatbotController = require('../apis/chatBot/chatbotController');
 
 const cloudStorage = multer.memoryStorage();
 const cloudUpload = multer({ storage: cloudStorage });
@@ -32,8 +31,6 @@ router.post('/contact/add', contactController.add);
 //ISSUE
 router.post('/issue/public', issueController.public);
 
-//CHATBOT
-router.post("/chat", chatbotController.chatbot);
 
 //TOKEN CHECKER
 router.use(require('../middleware/tokenChecker')); 

@@ -570,6 +570,19 @@ export default function AdminHeader() {
                                                                         </button>
 
                                                                     </div>
+                                                                    {activeTab === "citizens" && n.issueId?.media && (
+                                                                        <img
+                                                                            src={n.issueId.media}
+                                                                            alt="issue"
+                                                                            style={{
+                                                                                width: "100%",
+                                                                                height: "120px",
+                                                                                objectFit: "cover",
+                                                                                borderRadius: "12px",
+                                                                                marginTop: "12px"
+                                                                            }}
+                                                                        />
+                                                                    )}
 
                                                                     {/* PROOF IMAGE */}
                                                                     {activeTab === "employees" && n.proofImage && (

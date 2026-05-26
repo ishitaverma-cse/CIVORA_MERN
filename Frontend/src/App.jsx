@@ -32,6 +32,7 @@ import Notification from './components/pages/user/Notification'
 
 
 import { ToastContainer } from 'react-toastify'
+import Chatbot from './components/pages/user/Chatbot'
 
 
 export default function App() {
@@ -76,8 +77,9 @@ export default function App() {
           </Route>
 
         </Routes>
-      </BrowserRouter>
 
+      <Chatbot/> 
+      </BrowserRouter>
       <ToastContainer/>
     </>
   )

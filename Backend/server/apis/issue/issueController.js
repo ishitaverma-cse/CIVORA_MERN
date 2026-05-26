@@ -10,6 +10,7 @@ const add = async (req, res) => {
     try {
 
         console.log(req.file);
+
         // CHECK BLOCK FIRST / USER STATUS
         const { reportedBy } = req.body;
         const user = await userModel.findById(reportedBy);
@@ -24,6 +25,7 @@ const add = async (req, res) => {
         if (user.isBlocked) {
             return res.json({
                 success: false,
+                blocked: true,
                 message: "You are blocked by admin. You cannot report issues."
             });
         }
@@ -97,16 +99,8 @@ const add = async (req, res) => {
             let savedissue = await issueData.save();
 
             // CREATE ADMIN NOTIFICATION (BELL)
-            const lastNotification = await notificationModel
-                .findOne()
-                .sort({ autoId: -1 });
-
-            const newNotificationId = lastNotification
-                ? lastNotification.autoId + 1
-                : 1;
-
             await notificationModel.create({
-                autoId: newNotificationId,
+
                 issueId: savedissue._id,
                 reportedBy: reportedBy,
                 isAdmin: true,
@@ -203,7 +197,9 @@ const single = async (req, res) => {
 //UPDATE OPERATION
 const update = async (req, res) => {
     try {
-        console.log(req.user);
+
+        console.log("BODY RECEIVED:", req.body);
+        console.log("USER:", req.user);
 
         const issueId = req.body?._id;
         const incomingData = req.body;
@@ -213,11 +209,10 @@ const update = async (req, res) => {
                 status: 400,
                 success: false,
                 message: "_id is required"
-            })
+            });
         }
 
-
-        //STEP 1: FETCH ISSUE
+        // FETCH ISSUE
         const issue = await issueModel.findOne({
             _id: issueId,
             isDelete: false
@@ -228,18 +223,18 @@ const update = async (req, res) => {
                 status: 404,
                 success: false,
                 message: "No such issue exists"
-            })
+            });
         }
 
-        const oldStatus = issue.status;
+        // STORE OLD STATUS
+        const oldStatus = issue.status?.toString();
 
         // ROLE CHECK
-        const userType = req.user.userType;  // (Assuming: 1 = Admin, 2 = Employee, 3 = Citizen)
+        const userType = req.user.userType;
 
-        // EMPLOYEE LOGIC
+        // ================= EMPLOYEE =================
         if (userType === 2) {
 
-            // STEP 2: Convert user → employee
             const employee = await employeeModel.findOne({
                 userId: req.user._id
             });
@@ -251,7 +246,7 @@ const update = async (req, res) => {
                 });
             }
 
-            // STEP 3: ADD YOUR CHECK HERE
+            // CHECK ASSIGNED ISSUE
             if (
                 !issue.assignedTo ||
                 issue.assignedTo.toString() !== employee._id.toString()
@@ -262,40 +257,71 @@ const update = async (req, res) => {
                 });
             }
 
-            // STEP 4: Allowed updates
+            // UPDATE STATUS
             if (incomingData.status) {
                 issue.status = incomingData.status;
-
-                // REMOVE OLD RESOLUTION DATA
-                if (incomingData.status !== "Resolved") {
-                    issue.remarks = "";
-                    issue.proofImage = "";
-                }
             }
 
+            // CLEAR OLD DATA IF NOT RESOLVED
+            if (incomingData.status !== "Resolved") {
+                issue.remarks = "";
+                issue.proofImage = "";
+            }
+
+            // UPDATE REMARKS
             if (incomingData.remarks) {
                 issue.remarks = incomingData.remarks;
             }
 
+            // UPLOAD PROOF
             if (req.file) {
-                issue.proofImage = req.file.filename;
+
+                try {
+                    const proofUrl = await upload(req.file.buffer);
+
+                    issue.proofImage = proofUrl;
+
+                } catch (err) {
+
+                    return res.json({
+                        success: false,
+                        message: "Proof upload failed"
+                    });
+                }
+            }
+        }
+
+        // ================= ADMIN =================
+        else if (userType === 1) {
+
+            if (incomingData.title) {
+                issue.title = incomingData.title;
             }
 
+            if (incomingData.description) {
+                issue.description = incomingData.description;
+            }
+
+            if (incomingData.status) {
+                issue.status = incomingData.status;
+            }
+
+            if (incomingData.location) {
+                issue.location = incomingData.location;
+            }
+
+            if (incomingData.media) {
+                issue.media = incomingData.media;
+            }
+
+            if (incomingData.aiSeverityScore) {
+                issue.aiSeverityScore = incomingData.aiSeverityScore;
+            }
         }
 
-        // ADMIN LOGIC (FULL ACCESS)
-        else if (userType === 1) {
-            if (incomingData.title) { issue.title = incomingData.title }
-            if (incomingData.description) { issue.description = incomingData.description }
-            if (incomingData.status) { issue.status = incomingData.status }
-            if (incomingData.location) { issue.location = incomingData.location }
-            if (incomingData.media) { issue.media = incomingData.media }
-            if (incomingData.aiSeverityScore) { issue.aiSeverityScore = incomingData.aiSeverityScore }
-        }
-        // CITIZEN LOGIC 
+        // ================= CITIZEN =================
         else if (userType === 3) {
 
-            // Only allow editing own issue (optional check)
             if (issue.reportedBy.toString() !== req.user._id.toString()) {
                 return res.json({
                     success: false,
@@ -303,66 +329,158 @@ const update = async (req, res) => {
                 });
             }
 
-            if (incomingData.title) issue.title = incomingData.title;
-            if (incomingData.location) issue.location = incomingData.location;
+            if (incomingData.title) {
+                issue.title = incomingData.title;
+            }
 
-            if (incomingData.description) issue.description = incomingData.description;
+            if (incomingData.location) {
+                issue.location = incomingData.location;
+            }
+
+            if (incomingData.description) {
+                issue.description = incomingData.description;
+            }
+
+            if (incomingData.categoryId) {
+                issue.categoryId = incomingData.categoryId;
+            }
+
             if (req.file) {
-                let image = issue.media;
 
                 try {
-                    let imageUrl = await upload(req.file.buffer);
-                    image = imageUrl;
+
+                    const imageUrl = await upload(req.file.buffer);
+
+                    issue.media = imageUrl;
+
                 } catch (err) {
+
                     return res.json({
                         success: false,
                         message: "Image upload failed"
                     });
                 }
-
-                issue.media = image;
             }
-
-
         }
+
+        // UPDATE TIME
         issue.updatedAt = Date.now();
 
-        let savedData = await issue.save();
-        if (oldStatus !== issue.status) {       //prevent duplicate notifications
+        // SAVE ISSUE
+        const savedData = await issue.save();
 
-            // CREATE NOTIFICATION FOR CITIZEN
-            await notificationModel.create({
-                autoId: await notificationModel.countDocuments({}) + 1,
-                issueId: issue._id,
-                userId: issue.reportedBy,
-                isAdmin: true,
-                type:
-                    issue.status === "Resolved"
-                        ? "ISSUE_RESOLVED"
-                        : "STATUS_UPDATED",
-                status: issue.status,
-                message:
-                    `Your issue "${issue.title}" is now ${issue.status}`,
-                remark: issue.remarks || "",
-                proofImage:
-                    issue.proofImage || ""
-            });
+        // ================= STATUS TRACKING =================
+        const newStatus = savedData.status?.toString();
+
+        const statusChanged =
+            incomingData.status &&
+            oldStatus?.trim() !== newStatus?.trim();
+
+        console.log("OLD STATUS:", oldStatus);
+        console.log("NEW STATUS:", newStatus);
+        console.log("STATUS CHANGED:", statusChanged);
+
+        if (incomingData.status) {
+
+            try {
+
+                // SAFE USER ID
+                const citizenId = issue.reportedBy.toString();
+
+                console.log("CITIZEN ID:", citizenId);
+
+                // ================= ADMIN NOTIFICATION =================
+                console.log("ENTERING NOTIFICATION CREATE");
+
+                await notificationModel.create({
+
+                    // autoId:
+                    //     await notificationModel.countDocuments({}) + 1,
+
+                    issueId: savedData._id,
+
+                    userId: citizenId,
+
+                    isAdmin: true,
+
+                    type:
+                        newStatus === "Resolved"
+                            ? "ISSUE_RESOLVED"
+                            : "STATUS_UPDATED",
+
+                    status: newStatus,
+
+                    message:
+                        `Issue "${savedData.title}" updated to ${newStatus}`,
+
+                    remark:
+                        savedData.remarks || "",
+
+                    proofImage:
+                        savedData.proofImage || ""
+
+                });
+
+                // ================= USER NOTIFICATION =================
+                await notificationModel.create({
+
+                    // autoId:
+                    //     await notificationModel.countDocuments({}) + 1,
+
+                    issueId: savedData._id,
+
+                    userId: citizenId,
+
+                    isAdmin: false,
+
+                    type:
+                        newStatus === "Resolved"
+                            ? "ISSUE_RESOLVED"
+                            : "STATUS_UPDATED",
+
+                    status: newStatus,
+
+                    message:
+                        `Your issue "${savedData.title}" is now ${newStatus}`,
+
+                    remark:
+                        savedData.remarks || "",
+
+                    proofImage:
+                        savedData.proofImage || ""
+
+                });
+
+                console.log("✅ Notifications Created");
+                console.log("NOTIFICATIONS SAVED SUCCESSFULLY");
+
+            } catch (notifErr) {
+
+                console.log("NOTIFICATION ERROR:", notifErr);
+
+            }
         }
+
         return res.json({
             status: 200,
             success: true,
-            message: "issue Updated",
+            message: "Issue Updated",
             data: savedData
         });
-    }
-    catch (err) {
+
+    } catch (err) {
+
+        console.log("UPDATE ERROR:", err);
+
         return res.json({
             status: 500,
             success: false,
-            message: "ISE: " + err
-        })
+            message: "ISE: " + err.message
+        });
     }
-}
+};
+
+
 
 //SOFT DELETE
 const softDelete = async (req, res) => {
