@@ -130,7 +130,7 @@ export default function Home() {
 
                                 <Link
                                     to="/issues"
-                                    className="btn btn-primary ms-5 p-3"
+                                    className="btn btn-primary ms-5 py-3"
                                 >
                                     <div>
                                         Start Reporting
