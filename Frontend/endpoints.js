@@ -1,5 +1,5 @@
-// export const BASE_URL = 'https://civora-mern.onrender.com'
-export const BASE_URL = 'http://localhost:3000'
+export const BASE_URL = 'https://civora-mern.onrender.com'
+// export const BASE_URL = 'http://localhost:3000'
 // export const BASE_URL = 'http://192.168.29.65:3000'
 
 

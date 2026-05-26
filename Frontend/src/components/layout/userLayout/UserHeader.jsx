@@ -10,6 +10,8 @@ import { sendOtp, resetPassword } from "../../../services/userService";
 import { FaBell } from "react-icons/fa";
 import { myNotifications } from "../../../services/NotificationService";
 import { FaTimes } from "react-icons/fa";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../../../firebase";
 
 export default function UserHeader() {
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -222,6 +224,27 @@ export default function UserHeader() {
     useEffect(() => {
         fetchNotificationCount();
     }, []);
+
+    //HANDLE GOOGLE SIGN IN 
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            console.log(user);
+
+            toast.success("Google Login Success");
+            localStorage.setItem("isLogin", true);
+            localStorage.setItem("userId", user.uid);
+            localStorage.setItem("userName", user.displayName);
+            setShowLoginModal(false);
+
+            navigate("/");
+
+        } catch (err) {
+            console.log(err);
+            toast.error("Google Login Failed");
+        }
+    };
 
 
 
@@ -558,9 +581,11 @@ export default function UserHeader() {
 
                             <button
                                 type="button"
-                                className=" w-100 rounded-pill mb-4 register-content button"
+                                onClick={handleGoogleLogin}
+                                className="w-100 rounded-pill mb-4 register-content button"
                             >
                                 <i className="fa-brands fa-google me-2"></i>
+
                                 <b>Sign in with Google</b>
                             </button>
 

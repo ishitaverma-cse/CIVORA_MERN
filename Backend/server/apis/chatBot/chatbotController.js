@@ -49,7 +49,7 @@ const chatbot = async (req, res) => {
                 if (!localStorage.getItem("token")) {
                     return {
                         reply: "Please login first to view your notifications.",
-                        redirect: "/login",
+                        "action": "openLoginModal",
                         buttonText: "Login Now"
                     };
                 }
