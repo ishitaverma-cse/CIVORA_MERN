@@ -11,7 +11,9 @@ const issueSchema = new mongoose.Schema({
     status: { type: String, enum: ["Pending", "In Progress", "Resolved", "Rejected"], default: "Pending" },
     location: { type: String },
     media: [{ type: String }],     //supports mult images/videos later.
+
     aiSeverityScore: { type: Number, default: 0 },
+    aiPriority: { type: String, enum: ["Low", "Medium", "High"], default: "Low" },
     remarks: { type: String },
     proofImage: { type: String },
 

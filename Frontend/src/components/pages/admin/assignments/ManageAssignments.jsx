@@ -13,7 +13,7 @@ export default function ManageAssignments() {
     const [loading, setLoading] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 8;
 
     // FETCH DATA
     const fetchData = async () => {
@@ -63,7 +63,7 @@ export default function ManageAssignments() {
 
             const issue = issues.find(i => i._id === issueId);
 
-            // 🚨 prevent duplicate assignment call
+            // prevent duplicate assignment call
             if (issue?.assignedTo?._id === employeeId) {
                 toast.info("Already assigned to this employee");
                 return;
@@ -151,8 +151,6 @@ export default function ManageAssignments() {
                     className="card border-0 shadow-sm rounded-5 p-4"
                     style={{ background: "#ffffff" }}
                 >
-
-
 
                     <div className="table-responsive">
 

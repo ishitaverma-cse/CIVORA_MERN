@@ -93,18 +93,20 @@ export default function MyIssues() {
 
     //HANDLE ADD ISSUE BUTTON 
     const handleAddIssueClick = () => {
-        const isBlocked = localStorage.getItem("isBlocked") === "true";
+        const isBlocked = localStorage.getItem("isBlocked");
 
-        if (isBlocked) {
+        console.log("BLOCK STATUS:", isBlocked);
+
+        if (isBlocked === "true") {
             Swal.fire({
                 icon: "error",
                 title: "Access Denied",
-                text: "🚫 You are blocked by admin."
+                text: "🚫 You are blocked by admin.",
+                confirmButtonColor: "#d33"
             });
-
             return;
         }
-        openModal();
+        openModal(null);
     };
 
     //HANDLE DELETE
@@ -167,7 +169,7 @@ export default function MyIssues() {
                                     fontWeight: "500",
                                     whiteSpace: "nowrap"
                                 }}
-                                onClick={() => openModal("Add", null)}
+                                onClick={handleAddIssueClick}
                             >
                                 + Add New Issues
                             </button>

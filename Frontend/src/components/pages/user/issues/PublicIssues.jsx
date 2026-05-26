@@ -14,6 +14,7 @@ export default function PublicIssues() {
     const [statusFilter, setStatusFilter] = useState("All");
     const [categoryFilter, setCategoryFilter] = useState("");
     const [visibleCount, setVisibleCount] = useState(3);
+    const [priorityFilter, setPriorityFilter] = useState("All");
 
     //FETCH MY ISSUES
     async function fetchMyIssues() {
@@ -138,6 +139,10 @@ export default function PublicIssues() {
                 filters.categoryId = categoryFilter;
             }
 
+            if (priorityFilter && priorityFilter !== "All") {
+                filters.aiPriority = priorityFilter;
+            }
+
             const res = await publicIssue(filters);
 
             if (res.data.success) {
@@ -167,7 +172,7 @@ export default function PublicIssues() {
     useEffect(() => {
         fetchIssues();
         setVisibleCount(3);
-    }, [statusFilter, categoryFilter]);
+    }, [statusFilter, categoryFilter, priorityFilter]);
 
 
     return (
@@ -248,7 +253,6 @@ export default function PublicIssues() {
 
                                     {/* PRIORITY */}
                                     <div className="col-lg-4 col-md-6">
-
                                         <label
                                             className="form-label fw-semibold mb-2"
                                             style={{ color: "#3559b7" }}
@@ -256,12 +260,16 @@ export default function PublicIssues() {
                                             Priority
                                         </label>
 
-                                        <select className="form-select rounded-pill px-3 py-2 shadow-none">
+                                        <select
+                                            className="form-select rounded-pill px-3 py-2 shadow-none"
+                                            value={priorityFilter}
+                                            onChange={(e) => setPriorityFilter(e.target.value)}
+                                        >
 
-                                            <option>All</option>
-                                            <option>High</option>
-                                            <option>Medium</option>
-                                            <option>Low</option>
+                                            <option value="All">All</option>
+                                            <option value="High">High</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="Low">Low</option>
 
                                         </select>
                                     </div>
@@ -300,11 +308,42 @@ export default function PublicIssues() {
                                             {/* IMAGE */}
                                             {issue.media && issue.media.length > 0 && (
 
-                                                <div className="issue-image">
+                                                <div
+                                                    className="issue-image position-relative overflow-hidden"
+                                                    style={{
+                                                        height: "230px"
+                                                    }}
+                                                >
+
+                                                    {/* PRIORITY BADGE */}
+                                                    <div
+                                                        style={{
+                                                            position: "absolute",
+                                                            top: "12px",
+                                                            right: "12px",
+                                                            zIndex: 20,
+                                                            background: "#111",
+                                                            color: "#fff",
+                                                            padding: "6px 14px",
+                                                            borderRadius: "30px",
+                                                            fontSize: "12px",
+                                                            fontWeight: "700",
+                                                            letterSpacing: "0.5px",
+                                                            textTransform: "uppercase",
+                                                            boxShadow: "0 4px 12px rgba(0,0,0,0.25)"
+                                                        }}
+                                                    >
+                                                        {issue.aiPriority} Priority
+                                                    </div>
 
                                                     <img
                                                         src={`${issue.media[0]}`}
                                                         alt="issue"
+                                                        style={{
+                                                            width: "100%",
+                                                            height: "100%",
+                                                            objectFit: "cover"
+                                                        }}
                                                     />
 
                                                 </div>
@@ -319,7 +358,13 @@ export default function PublicIssues() {
                                                 </h5>
 
                                                 <p
-                                                    className=" text-muted small"
+                                                    className="text-muted small mb-3"
+                                                    style={{
+                                                        minHeight: "95px",
+                                                        maxHeight: "95px",
+                                                        overflow: "hidden",
+                                                        lineHeight: "1.6"
+                                                    }}
                                                     title={issue.description}
                                                 >
                                                     {issue.description}
@@ -337,61 +382,143 @@ export default function PublicIssues() {
 
                                                 </div>
 
-                                                <div className="small text-muted d-flex flex-wrap gap-2">
+                                                <div
+                                                    className="small text-muted mt-3"
+                                                    style={{
+                                                        minHeight: "70px"
+                                                    }}
+                                                >
 
-                                                    <span>📍 {issue.location}</span>
-
-                                                    <span>
-                                                        📅 {new Date(issue.createdAt).toLocaleString("en-IN", {
-                                                            day: "numeric",
-                                                            month: "short",
-                                                            year: "numeric",
-                                                            hour: "2-digit",
-                                                            minute: "2-digit"
-                                                        })}
-                                                    </span>
-
-                                                </div>
-
-                                                {/* UPVOTE SECTION */}
-                                                <div className="d-flex align-items-center justify-content-between mt-4">
-
-                                                    {/* UPVOTE BUTTON */}
+                                                    {/* LOCATION */}
                                                     <div
-                                                        className={`d-flex align-items-center gap-2 px-3 py-2 rounded-pill ${issue.isUpvoted ? "bg-success-subtle" : "bg-light"}`}
+                                                        className="d-flex align-items-start gap-2 mb-2"
                                                         style={{
-                                                            cursor: "pointer",
-                                                            transition: "0.3s ease",
-                                                            border: issue.isUpvoted
-                                                                ? "1px solid #198754"
-                                                                : "1px solid #dee2e6"
+                                                            lineHeight: "1.5"
                                                         }}
-                                                        onClick={() => handleUpvote(issue._id)}
                                                     >
+                                                        <span>📍</span>
 
                                                         <span
                                                             style={{
-                                                                fontSize: "20px",
-                                                                color: issue.isUpvoted ? "#198754" : "#6c757d",
-                                                                transition: "0.2s ease"
+                                                                wordBreak: "break-word"
                                                             }}
                                                         >
-                                                            {issue.isUpvoted
-                                                                ? <FaThumbsUp />
-                                                                : <FaRegThumbsUp />
-                                                            }
+                                                            {issue.location}
                                                         </span>
+                                                    </div>
 
-                                                        <span
-                                                            className={`fw-semibold small ${issue.isUpvoted ? "text-success" : "text-muted"}`}
-                                                        >
-                                                            {issue.upvotes} Upvotes
+                                                    {/* DATE */}
+                                                    <div className="d-flex align-items-center gap-2">
+
+                                                        <span>📅</span>
+
+                                                        <span>
+                                                            {new Date(issue.createdAt).toLocaleString("en-IN", {
+                                                                day: "numeric",
+                                                                month: "short",
+                                                                year: "numeric",
+                                                                hour: "2-digit",
+                                                                minute: "2-digit"
+                                                            })}
                                                         </span>
 
                                                     </div>
 
                                                 </div>
 
+                                                {/* AI SEVERITY + UPVOTE */}
+                                                <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
+
+                                                    {/* AI SEVERITY */}
+                                                    <div className="mt-4">
+                                                        <div
+                                                            className="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+                                                            style={{
+                                                                background:
+                                                                    issue.aiSeverityScore >= 8
+                                                                        ? "rgba(220,53,69,0.12)"
+                                                                        : issue.aiSeverityScore >= 4
+                                                                            ? "rgba(245,158,11,0.12)"
+                                                                            : "rgba(25,135,84,0.12)",
+
+                                                                border:
+                                                                    issue.aiSeverityScore >= 8
+                                                                        ? "1px solid rgba(220,53,69,0.3)"
+                                                                        : issue.aiSeverityScore >= 4
+                                                                            ? "1px solid rgba(245,158,11,0.3)"
+                                                                            : "1px solid rgba(25, 100, 135, 0.3)"
+                                                            }}
+                                                        >
+
+                                                            <span
+                                                                style={{
+                                                                    fontSize: "18px"
+                                                                }}
+                                                            >
+                                                                ⚡
+                                                            </span>
+
+                                                            <span
+                                                                className="fw-semibold small p-1"
+                                                                style={{
+                                                                    color:
+                                                                        issue.aiSeverityScore >= 8
+                                                                            ? "#dc3545"
+                                                                            : issue.aiSeverityScore >= 4
+                                                                                ? "#d97706"
+                                                                                : "#198754"
+                                                                }}
+                                                            >
+                                                                AI Severity {issue.aiSeverityScore}/10
+                                                            </span>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    {/* UPVOTE SECTION */}
+                                                    <div
+                                                        className="d-flex align-items-center justify-content-between"
+                                                        style={{
+                                                            marginTop: "16px"
+                                                        }}
+                                                    >
+
+                                                        {/* UPVOTE BUTTON */}
+                                                        <div
+                                                            className={`d-flex align-items-center gap-2 px-3 py-2 rounded-pill ${issue.isUpvoted ? "bg-success-subtle" : "bg-light"}`}
+                                                            style={{
+                                                                cursor: "pointer",
+                                                                transition: "0.3s ease",
+                                                                border: issue.isUpvoted
+                                                                    ? "1px solid #198754"
+                                                                    : "1px solid #dee2e6"
+                                                            }}
+                                                            onClick={() => handleUpvote(issue._id)}
+                                                        >
+
+                                                            <span
+                                                                style={{
+                                                                    fontSize: "20px",
+                                                                    color: issue.isUpvoted ? "#198754" : "#6c757d",
+                                                                    transition: "0.2s ease"
+                                                                }}
+                                                            >
+                                                                {issue.isUpvoted
+                                                                    ? <FaThumbsUp />
+                                                                    : <FaRegThumbsUp />
+                                                                }
+                                                            </span>
+
+                                                            <span
+                                                                className={`fw-semibold small ${issue.isUpvoted ? "text-success" : "text-muted"}`}
+                                                            >
+                                                                {issue.upvotes} Upvotes
+                                                            </span>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                         </div>

@@ -4,142 +4,216 @@ export default function UserFooter() {
     return (
         <>
             <footer id="footer" className="footer position-relative dark-background">
+
+                {/* FOOTER TOP */}
                 <div className="footer-top">
                     <div className="container">
+
                         <div className="row gy-4">
+
+                            {/* ABOUT */}
                             <div className="col-lg-4 col-md-6 footer-about">
+
                                 <div className="logo d-flex align-items-center">
-                                    <span className="sitename">Civora</span>
+                                    <span className="sitename">CIVORA</span>
                                 </div>
+
                                 <div className="footer-contact pt-3">
-                                    <p>A108 Adam Street</p>
-                                    <p>New York, NY 535022</p>
+                                    <p>Smart Civic Issue Management Platform</p>
+                                    <p>Punjab, India</p>
+
                                     <p className="mt-3">
-                                        <strong>Phone:</strong> <span>+1 5589 55488 55</span>
+                                        <strong>Phone:</strong>
+                                        <span> +91 1800-123-4567</span>
                                     </p>
+
                                     <p>
-                                        <strong>Email:</strong> <span>info@example.com</span>
+                                        <strong>Email:</strong>
+                                        <span> support@civora.gov.in</span>
                                     </p>
                                 </div>
+
                             </div>
+
+                            {/* QUICK LINKS */}
                             <div className="col-lg-2 col-md-3 footer-links">
-                                <h4>Useful Links</h4>
+
+                                <h4>Quick Links</h4>
+
                                 <ul>
                                     <li>
-                                        <Link to="#">Home</Link>
+                                        <Link to="/">
+                                            Home
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">About us</Link>
+                                        <Link to="/issues">
+                                            My Issues
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Services</Link>
+                                        <Link to="/issues">
+                                            Public Issues
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Terms of service</Link>
+                                        <Link to="/contact">
+                                            Contact
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Privacy policy</Link>
+                                        <Link
+                                            to="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+
+                                                localStorage.removeItem("isLogin");
+                                                localStorage.removeItem("token");
+                                                localStorage.removeItem("userId");
+
+                                                window.location.href = "/";
+                                            }}
+                                        >
+                                            Logout
+                                        </Link>
                                     </li>
                                 </ul>
+
                             </div>
-                            <div className="col-lg-2 col-md-3 footer-links">
-                                <h4>Our Services</h4>
+
+                            {/* FEATURES */}
+                            <div className="col-lg-3 col-md-3 footer-links">
+
+                                <h4>Platform Features</h4>
+
                                 <ul>
                                     <li>
-                                        <Link to="#">Web Design</Link>
+                                        <Link to="#">
+                                            AI Severity Detection
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Web Development</Link>
+                                        <Link to="#">
+                                            Real-Time Tracking
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Product Management</Link>
+                                        <Link to="#">
+                                            Complaint Management
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Marketing</Link>
+                                        <Link to="#">
+                                            Smart Notifications
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Graphic Design</Link>
+                                        <Link to="#">
+                                            Public Transparency
+                                        </Link>
                                     </li>
                                 </ul>
+
                             </div>
-                            <div className="col-lg-2 col-md-3 footer-links">
-                                <h4>Hic solutasetp</h4>
+
+                            {/* SUPPORT */}
+                            <div className="col-lg-3 col-md-3 footer-links">
+
+                                <h4>Support</h4>
+
                                 <ul>
                                     <li>
-                                        <Link to="#">Molestiae accusamus iure</Link>
+                                        <Link to="#">
+                                            Help Center
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Excepturi dignissimos</Link>
+                                        <Link to="#">
+                                            Contact Support
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Suscipit distinctio</Link>
+                                        <Link to="#">
+                                            FAQs
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Dilecta</Link>
+                                        <Link to="#">
+                                            Privacy Policy
+                                        </Link>
                                     </li>
+
                                     <li>
-                                        <Link to="#">Sit quas consectetur</Link>
+                                        <Link to="#">
+                                            Terms & Conditions
+                                        </Link>
                                     </li>
                                 </ul>
+
                             </div>
-                            <div className="col-lg-2 col-md-3 footer-links">
-                                <h4>Nobis illum</h4>
-                                <ul>
-                                    <li>
-                                        <Link to="#">Ipsam</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="#">Laudantium dolorum</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="#">Dinera</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="#">Trodelas</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="#">Flexo</Link>
-                                    </li>
-                                </ul>
-                            </div>
+
                         </div>
+
                     </div>
                 </div>
+
+                {/* COPYRIGHT */}
                 <div className="copyright text-center">
+
                     <div className="container d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center">
+
                         <div className="d-flex flex-column align-items-center align-items-lg-start">
+
                             <div>
                                 © Copyright{" "}
                                 <strong>
-                                    <span>MyWebsite</span>
+                                    <span>CIVORA</span>
                                 </strong>
                                 . All Rights Reserved
                             </div>
+
                             <div className="credits">
-                                {/* All the links in the footer should remain intact. */}
-                                {/* You can delete the links only if you purchased the pro version. */}
-                                {/* Licensing information: https://bootstrapmade.com/license/ */}
-                                {/* Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/herobiz-bootstrap-business-template/ */}
-                                Designed by <Link to="https://bootstrapmade.com/">BootstrapMade</Link> |{" "}
-                                <Link to="https://bootstrapmade.com/tools/">DevTools</Link>
+                                Designed & Developed by <strong>Ishita Verma</strong>
                             </div>
+
                         </div>
+
+                        {/* SOCIAL ICONS */}
                         <div className="social-links order-first order-lg-last mb-3 mb-lg-0">
+
                             <Link to="">
                                 <i className="bi bi-twitter-x" />
                             </Link>
+
                             <Link to="">
                                 <i className="bi bi-facebook" />
                             </Link>
+
                             <Link to="">
                                 <i className="bi bi-instagram" />
                             </Link>
+
                             <Link to="">
                                 <i className="bi bi-linkedin" />
                             </Link>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </footer>
         </>
     )

@@ -5,6 +5,63 @@ const employeeModel = require('../employee/employeeModel')
 const notificationModel = require("../notification/notificationModel");
 const { upload } = require("../../middleware/multer");
 
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_AI_STUDIO_API_KEY);
+const model = genAI.getGenerativeModel({
+    model: "gemini-2.5-flash"
+});
+
+
+const generateSeverity = async (title, description) => {
+    try {
+        const prompt = `
+            You are an AI severity analyzer for a smart city issue reporting system.
+            
+            Analyze the issue based on title and description.
+            
+            Return ONLY valid JSON.
+            
+            Rules:
+            - Severity score must be between 1 to 10
+            - Priority must be Low, Medium, or High
+            
+            Examples:
+            1-3 => Low
+            4-7 => Medium
+            8-10 => High
+            
+            Issue Title:
+            ${title}
+            
+            Issue Description:
+            ${description}
+            
+            Return format:
+            {
+              "score": 8,
+              "priority": "High"
+            }
+        `;
+
+        const result = await model.generateContent(prompt);
+        const response =
+            await result.response.text();
+
+        const cleaned = response
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
+            .trim();
+        return JSON.parse(cleaned);
+
+    } catch (err) {
+        console.log("AI ERROR:", err);
+        return {
+            score: 5,
+            priority: "Medium"
+        };
+    }
+};
+
 // CREATE OPERATION
 const add = async (req, res) => {
     try {
@@ -81,6 +138,12 @@ const add = async (req, res) => {
                 })
             }
 
+            // GENERATE AI SEVERITY
+            const aiResult = await generateSeverity(
+                incomingData.title,
+                incomingData.description
+            );
+
             //SAVE ISSUE
             let issueData = new issueModel({
                 autoId: newAutoId,
@@ -90,7 +153,8 @@ const add = async (req, res) => {
                 description: incomingData.description,
                 location: incomingData.location,
                 media: image,
-                aiSeverityScore: incomingData.aiSeverityScore,
+                aiSeverityScore: aiResult.score,
+                aiPriority: aiResult.priority,
                 status: "Pending",
                 isPublic: true,
                 upvotes: 0
@@ -312,10 +376,6 @@ const update = async (req, res) => {
 
             if (incomingData.media) {
                 issue.media = incomingData.media;
-            }
-
-            if (incomingData.aiSeverityScore) {
-                issue.aiSeverityScore = incomingData.aiSeverityScore;
             }
         }
 

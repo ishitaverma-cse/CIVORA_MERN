@@ -357,7 +357,64 @@ export default function AdminDashboard() {
                                                     {/* CONTENT */}
                                                     <div className="area-info p-4 pt-1">
 
-                                                        <h5 className="mb-1">{issue.title}</h5>
+                                                        <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
+
+                                                            {/* TITLE */}
+                                                            <h5
+                                                                className="mb-0"
+                                                                style={{
+                                                                    fontSize: "18px",
+                                                                    fontWeight: "600"
+                                                                }}
+                                                            >
+                                                                {issue.title}
+                                                            </h5>
+
+                                                            {/* AI SEVERITY BADGE */}
+                                                            <div
+                                                                className="d-flex align-items-center gap-1 px-2 py-1 rounded-pill"
+                                                                style={{
+                                                                    background:
+                                                                        issue.aiSeverityScore >= 8
+                                                                            ? "rgba(220,53,69,0.12)"
+                                                                            : issue.aiSeverityScore >= 5
+                                                                                ? "rgba(245,158,11,0.12)"
+                                                                                : "rgba(25,135,84,0.12)",
+
+                                                                    border:
+                                                                        issue.aiSeverityScore >= 8
+                                                                            ? "1px solid rgba(220,53,69,0.3)"
+                                                                            : issue.aiSeverityScore >= 5
+                                                                                ? "1px solid rgba(245,158,11,0.3)"
+                                                                                : "1px solid rgba(25,135,84,0.3)",
+
+                                                                    minWidth: "fit-content"
+                                                                }}
+                                                            >
+
+                                                                <span style={{ fontSize: "14px" }}>
+                                                                    ⚡
+                                                                </span>
+
+                                                                <span
+                                                                    className="fw-semibold"
+                                                                    style={{
+                                                                        fontSize: "12px",
+
+                                                                        color:
+                                                                            issue.aiSeverityScore >= 8
+                                                                                ? "#dc3545"
+                                                                                : issue.aiSeverityScore >= 5
+                                                                                    ? "#d97706"
+                                                                                    : "#198754"
+                                                                    }}
+                                                                >
+                                                                    {issue.aiSeverityScore}/10
+                                                                </span>
+
+                                                            </div>
+
+                                                        </div>
 
                                                         <p className="text-muted mb-2" style={{ fontSize: "14px" }}>
                                                             {issue.description?.length > 80

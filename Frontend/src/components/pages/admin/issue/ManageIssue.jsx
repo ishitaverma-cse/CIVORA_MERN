@@ -188,7 +188,7 @@ export default function ManageIssue() {
     //     return <RotateLoader/>;
     // }
 
-    
+
     return (
         <>
             <section
@@ -422,8 +422,39 @@ export default function ManageIssue() {
                                                         </td>
 
                                                         {/* AI SEVERITY */}
-                                                        <td className="fw-semibold">
-                                                            {item.aiSeverity || "N/A"}
+                                                        <td>
+                                                            <div className="d-flex flex-column align-items-center gap-1">
+
+                                                                {/* SCORE */}
+                                                                <span
+                                                                    className="fw-bold"
+                                                                    style={{
+                                                                        color:
+                                                                            item.aiSeverityScore >= 8
+                                                                                ? "#dc3545"
+                                                                                : item.aiSeverityScore >= 5
+                                                                                    ? "#d97706"
+                                                                                    : "#198754"
+                                                                    }}
+                                                                >
+                                                                    {item.aiSeverityScore || 0}/10
+                                                                </span>
+
+                                                                {/* PRIORITY */}
+                                                                <span
+                                                                    className={
+                                                                        item.aiPriority === "High"
+                                                                            ? "badge bg-danger"
+                                                                            : item.aiPriority === "Medium"
+                                                                                ? "badge bg-warning text-dark"
+                                                                                : "badge bg-success"
+                                                                    }
+                                                                >
+                                                                    {item.aiPriority || "Low"}
+                                                                </span>
+
+                                                            </div>
+
                                                         </td>
 
                                                         {/* ACTION */}
@@ -440,7 +471,7 @@ export default function ManageIssue() {
                                                                     deleteIssueHandler(item._id)
                                                                 }
                                                             >
-                                                                 <i className="bi bi-trash"></i>
+                                                                <i className="bi bi-trash"></i>
                                                             </button>
 
                                                         </td>

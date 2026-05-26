@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { sendOtp, resetPassword } from "../../../services/userService";
 import { FaBell } from "react-icons/fa";
 import { myNotifications } from "../../../services/NotificationService";
+import { FaTimes } from "react-icons/fa";
 
 export default function UserHeader() {
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -396,12 +397,24 @@ export default function UserHeader() {
                 className="register-modal"
                 overlayClassName="register-overlay"
             >
-                <button
-                    className="close-modal"
-                    onClick={() => setShowRegisterModal(false)}
+                <div
+                    style={{
+                        position: "absolute",
+                        top: "18px",
+                        right: "22px",
+                        zIndex: 1000
+                    }}
                 >
-                    ×
-                </button>
+                    <FaTimes
+                        size={18}
+                        style={{
+                            cursor: "pointer",
+                            color: "#444",
+                            transition: "0.2s ease"
+                        }}
+                        onClick={() => setShowRegisterModal(false)}
+                    />
+                </div>
 
                 <div className="register-container">
                     {/* LEFT FORM SIDE */}
@@ -502,12 +515,24 @@ export default function UserHeader() {
                 className="register-modal"
                 overlayClassName="register-overlay"
             >
-                <button
-                    className="close-modal"
-                    onClick={() => setShowLoginModal(false)}
+                <div
+                    style={{
+                        position: "absolute",
+                        top: "18px",
+                        right: "22px",
+                        zIndex: 1000
+                    }}
                 >
-                    ×
-                </button>
+                    <FaTimes
+                        size={18}
+                        style={{
+                            cursor: "pointer",
+                            color: "#444",
+                            transition: "0.2s ease"
+                        }}
+                        onClick={() => setShowLoginModal(false)}
+                    />
+                </div>
 
                 <div className="register-container">
                     {/* LEFT SIDE */}
@@ -600,12 +625,24 @@ export default function UserHeader() {
                 className="login-modal"
                 overlayClassName="register-overlay"
             >
-                <button
-                    className="close-modal"
-                    onClick={() => setShowForgotModal(false)}
+                <div
+                    style={{
+                        position: "absolute",
+                        top: "18px",
+                        right: "22px",
+                        zIndex: 1000
+                    }}
                 >
-                    ×
-                </button>
+                    <FaTimes
+                        size={18}
+                        style={{
+                            cursor: "pointer",
+                            color: "#444",
+                            transition: "0.2s ease"
+                        }}
+                        onClick={() => setShowForgotModal(false)}
+                    />
+                </div>
 
                 <div className="register-container">
                     {/* LEFT SIDE */}

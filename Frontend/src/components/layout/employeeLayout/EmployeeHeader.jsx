@@ -74,19 +74,25 @@ export default function EmployeeHeader() {
 
                                 <li className="dropdown list-unstyled">
                                     <Link to="#">
-                                        <img
-                                            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                                            alt="profile"
+                                        <div
                                             style={{
                                                 width: "38px",
                                                 height: "38px",
                                                 borderRadius: "50%",
-                                                objectFit: "cover",
+                                                background: "linear-gradient(135deg, #198754, #146c43)",
+                                                color: "white",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                fontWeight: "700",
+                                                fontSize: "16px",
                                                 marginRight: "10px",
-                                                border: "2px solid rgba(255,255,255,0.3)"
+                                                border: "2px solid rgba(255,255,255,0.3)",
+                                                textTransform: "uppercase"
                                             }}
-                                        />
-
+                                        >
+                                            {employee?.name?.charAt(0)}
+                                        </div>
 
                                         {/* <i className="bi bi-chevron-down toggle-dropdown" /> */}
                                     </Link>
