@@ -109,7 +109,6 @@ export default function Home() {
                                     backgroundImage: `url(${slide.img})`
                                 }}
                             />
-
                             <div className="hero-overlay" />
 
                             {/* HERO CONTENT */}
@@ -127,7 +126,6 @@ export default function Home() {
                                     {slide.subtitle}
                                 </p>
 
-
                                 <Link
                                     to="/issues"
                                     className="btn btn-primary ms-5 py-3"
@@ -135,11 +133,10 @@ export default function Home() {
                                     <div>
                                         Start Reporting
                                     </div>
+                                    
                                 </Link>
 
-
                             </div>
-
                         </div>
                     ))}
 

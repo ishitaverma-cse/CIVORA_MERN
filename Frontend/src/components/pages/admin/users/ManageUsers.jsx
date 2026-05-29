@@ -27,7 +27,6 @@ export default function ManageUsers() {
     const [selectedUser, setSelectedUser] = useState(null);
     const [reason, setReason] = useState("");
     const [loading, setLoading] = useState(true);
-
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
