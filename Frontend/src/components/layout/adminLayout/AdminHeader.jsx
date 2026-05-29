@@ -196,7 +196,7 @@ export default function AdminHeader() {
                                 </li>
 
                                 <li>
-                                    <Link to="/admin/user" className="active">
+                                    <Link to="/admin/users" className="active">
                                         Users
                                     </Link>
                                 </li>
