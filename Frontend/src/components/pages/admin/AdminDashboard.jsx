@@ -614,7 +614,7 @@ export default function AdminDashboard() {
                                             {
                                                 label: "Complaints by Category",
                                                 data: categories.slice(0, 5).map(i => i.value),
-                                                backgroundColor: "#616c6e74"
+                                                backgroundColor: "#c82a2a38"
                                             }
                                         ]
                                     }}
