@@ -134,7 +134,6 @@ export default function EmpProfile() {
                                         border: "5px solid #edf3ff"
                                     }}
                                 />
-
                                 <div>
 
                                     <h2
